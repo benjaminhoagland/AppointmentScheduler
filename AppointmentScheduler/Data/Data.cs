@@ -11,7 +11,7 @@ namespace AppointmentScheduluer
 {
     public static class Data
     {
-        public static List<string> tables = new List<string>() { "address", "appointment", "city", "country", "customer", "user" };
+        public static List<string> tables = new List<string>() { "country", "city", "address", "customer", "user", "appointment" };
         public static MySqlConnection Connect()
         {
             var connectionString = "server=wgudb.ucertify.com;database=U08i7a;port=3306;userid=U08i7a;password=53689299403;useaffectedrows=True;allowuservariables=True;sslmode=None";
@@ -56,11 +56,11 @@ namespace AppointmentScheduluer
             addresses.Add
             (
                 (
-                "1 Main St",
-                "",
-                "New York, New York",
-                "12345",
-                "(111) 222-3344"
+                    "1 Main St",
+                    "",
+                    "New York, New York",
+                    "12345",
+                    "(111) 222-3344"
                 )
             );
             foreach(var (address, address2, city, postalCode, phone) in addresses)
@@ -72,53 +72,224 @@ namespace AppointmentScheduluer
             customers.Add(("John Smith", "10 Downing Street", true));
             customers.Add(("Jane Smith", "10 Downing Street", true));
             customers.Add(("Pablo Diaz", "1 Main St", true));
+            customers.Add(("Pablo Diaz", "2 Main St", true));
             customers.Add(("Claudia Diaz", "1 Main St", true));
             foreach (var (customerName, address, active) in customers)
             {
                 InsertCustomer(customerName, address, active);
             }
+
+            var appointments = new List<(
+                int customerId,
+                string title,
+                string description,
+                string location,
+                string contact,
+                string type,
+                string url,
+                DateTime start,
+                DateTime end)>();
+
+            appointments.Add
+                (
+                    (
+                        0,
+                        "Appointment 1",
+                        "This is the first appointment",
+                        "New York, New York",
+                        "Contact Information",
+                        "Initial Appointment",
+                        "someaddress.domain.com",
+                        new DateTime(2020, 12, 01, 8, 0, 0),
+                        new DateTime(2020, 12, 01, 9, 0, 0)
+                     )
+                );
+            appointments.Add
+                (
+                    (
+                        1,
+                        "Appointment 2",
+                        "This is the second appointment",
+                        "London",
+                        "Contact Information",
+                        "Initial Appointment",
+                        "someaddress.domain.com",
+                        new DateTime(2020, 12, 01, 9, 0, 0),
+                        new DateTime(2020, 12, 01, 10, 0, 0)
+                     )
+                );
+            appointments.Add
+                (
+                    (
+                        2,
+                        "Appointment 3",
+                        "This is the third appointment",
+                        "London",
+                        "Contact Information",
+                        "Follow-Up Appointment",
+                        "someaddress.domain.com",
+                        new DateTime(2020, 12, 01, 10, 0, 0),
+                        new DateTime(2020, 12, 01, 11, 0, 0)
+                     )
+                );
+            appointments.Add
+                (
+                    (
+                        3,
+                        "Appointment 4",
+                        "This is the fourth appointment",
+                        "New York, New York",
+                        "Contact Information",
+                        "Follow-Up Appointment",
+                        "someaddress.domain.com",
+                        new DateTime(2020, 12, 01, 11, 0, 0),
+                        new DateTime(2020, 12, 01, 12, 0, 0)
+                     )
+                );
+
+            foreach (var (customerId, title, description, location, contact, type, url, start, end) in appointments)
+            {
+                InsertAppointment(customerId, title, description, location, contact, type, url, start, end);
+            }
         }
         public static List<string> Select(string table, int attribute = 0, string where = null)
         {
             var contents = new List<string>();
+            string query;
+            if (where == null)
+            {
+                query = "SELECT * FROM " + table + ";";
+            }
+            else
+            {
+                // string query = "SELECT * FROM " + table + " WHERE country = 'Spain';";
+                query = "SELECT * FROM " + table + " WHERE " + where + ";";
+            }
             try
             {
                 var connection = Data.Connect();
                 connection.Open();
-                if (where == null)
+                
+                MySqlCommand command = new MySqlCommand(query, connection);
+                MySqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    string query = "SELECT * FROM " + table + ";";
-                    MySqlCommand command = new MySqlCommand(query, connection);
-                    MySqlDataReader reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        contents.Add(reader[attribute].ToString());
-                    }
-                    reader.Close();
-                    connection.Close();
-                    return contents;
+                    contents.Add(reader[attribute].ToString());
                 }
-                else
-                {
-                    // string query = "SELECT * FROM " + table + " WHERE country = 'Spain';";
-                    string query = "SELECT * FROM " + table + " WHERE " + where + ";";
-                    MySqlCommand command = new MySqlCommand(query, connection);
-                    MySqlDataReader reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        contents.Add(reader[attribute].ToString());
-                    }
-                    reader.Close();
-                    connection.Close();
-                    return contents;
-                }
+                reader.Close();
+                connection.Close();
+                return contents;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
             }
-            contents.Add("Query returns 0 records");
+            if(contents.Count == 0)
+            {
+                contents.Add("No matching record");
+                MessageBox.Show("No matching record found for query \"" + query + "\"");
+            }
             return contents;
+        }
+        public static void InsertAppointment(
+            int customerId,
+            string title,
+            string description,
+            string location,
+            string contact,
+            string type,
+            string url,
+            DateTime start,
+            DateTime end,
+            string createdBy = "Initialization", string lastupdateby = "Initialization")
+        {
+            /*
+            appointmentId INT(10)
+            customerId INT(10)
+            userId INT
+            title VARCHAR(255)
+            description TEXT
+            location TEXT
+            contact TEXT
+            type TEXT
+            url VARCHAR(255)
+            start DATETIME
+            end DATETIME
+            createDate DATETIME
+            createdBy VARCHAR(40)
+            lastUpdate TIMESTAMP
+            lastUpdateBy VARCHAR(40)
+
+            */
+
+            try
+            {
+                var database = Data.Connect();
+                database.Open();
+
+                var command = database.CreateCommand();
+                command.CommandText = "INSERT INTO appointment(customerId, userId, title, description, location, contact, type, url, start, end, createdate, createdBy, lastupdateby)"
+                    + " VALUES(?customerId, ?userId, ?title, ?description, ?location, ?contact, ?type, ?url, ?start, ?end, ?createdate, ?createdBy, ?lastupdateby)";
+                command.Parameters.Add("?customerId", MySqlDbType.Int32).Value = customerId;
+                command.Parameters.Add("?userId", MySqlDbType.Int32).Value = 0;
+                command.Parameters.Add("?title", MySqlDbType.VarChar).Value = title;
+                command.Parameters.Add("?description", MySqlDbType.Text).Value = description;
+                command.Parameters.Add("?location", MySqlDbType.Text).Value = location;
+                command.Parameters.Add("?contact", MySqlDbType.Text).Value = contact;
+                command.Parameters.Add("?type", MySqlDbType.Text).Value = type;
+                command.Parameters.Add("?url", MySqlDbType.VarChar).Value = url;
+                command.Parameters.Add("?start", MySqlDbType.VarChar).Value = start.ToString("yyyy-MM-dd hh:mm:ss");
+                command.Parameters.Add("?end", MySqlDbType.VarChar).Value = end.ToString("yyyy-MM-dd hh:mm:ss");
+                command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                command.Parameters.Add("?createdBy", MySqlDbType.VarChar).Value = createdBy;
+                command.Parameters.Add("?lastupdateby", MySqlDbType.VarChar).Value = lastupdateby;
+                command.ExecuteNonQuery();
+
+
+                // close database
+                database.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+        public static void InsertUser(string userName, string password, bool active = true, string createdBy = "Initialization", string lastupdateby = "Initialization")
+        {
+            /*
+            userId INT
+            userName VARCHAR(50)
+            password VARCHAR(50)
+            active TINYINT
+            createDate DATETIME
+            createdBy VARCHAR(40)
+            lastUpdate TIMESTAMP
+            lastUpdateBy VARCHAR(40)
+            */
+            try
+            {
+                var database = Data.Connect();
+                database.Open();
+
+                var command = database.CreateCommand();
+                command.CommandText = "INSERT INTO user(userName, password, active, createdate, createdBy, lastupdateby)"
+                    + " VALUES(?userName, ?password, ?active, ?createdate, ?createdBy, ?lastupdateby)";
+                command.Parameters.Add("?userName", MySqlDbType.VarChar).Value = userName;
+                command.Parameters.Add("?password", MySqlDbType.VarChar).Value = password;
+                command.Parameters.Add("?active", MySqlDbType.Byte).Value = active;
+                command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                command.Parameters.Add("?createdBy", MySqlDbType.VarChar).Value = createdBy;
+                command.Parameters.Add("?lastupdateby", MySqlDbType.VarChar).Value = lastupdateby;
+                command.ExecuteNonQuery();
+
+
+                // close database
+                database.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
         public static void InsertCustomer(string customerName, string address, bool active, string createdBy = "Initialization", string lastupdateby = "Initialization")
         {
@@ -280,6 +451,12 @@ namespace AppointmentScheduluer
             foreach (var table in tables)
             {
                 DeleteAllTableRecords(table);
+            }
+            var credentials = new List<(string userName, string password)>();
+            credentials.Add(("test", "test"));
+            foreach(var (userName, password) in credentials)
+            {
+                InsertUser(userName, password);
             }
         }
     }
