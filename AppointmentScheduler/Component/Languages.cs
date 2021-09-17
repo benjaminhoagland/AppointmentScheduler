@@ -67,12 +67,12 @@ namespace AppointmentScheduluer
                 public static List<string> cancelButton = new List<string>() { "Cancel", "Cancelar" };
                 public static List<string> submitButton = new List<string>() { "Submit", "Entrar" };
                 public static List<string> backButton = new List<string>() { "Back", "Retroceso" };
+                public static List<string> addButton = new List<string>() { "Add New", "Nuevo" };
+                public static List<string> deleteButton = new List<string>() { "Delete", "Borra" };
 
 
 
 
-                
-                
             }
         }
     }

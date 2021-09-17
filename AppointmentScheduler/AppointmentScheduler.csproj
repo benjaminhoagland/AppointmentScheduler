@@ -89,7 +89,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppStatus.cs" />
+    <Compile Include="AppState.cs" />
+    <Compile Include="Component\Customer.cs" />
     <Compile Include="Component\Languages.cs" />
     <Compile Include="Component\Locations.cs" />
     <Compile Include="CustomerView.cs">

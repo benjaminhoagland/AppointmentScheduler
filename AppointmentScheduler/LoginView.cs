@@ -20,8 +20,8 @@ namespace AppointmentScheduluer
             // initialize languages and locations datasources
 
 
-            Localize(AppStatus.LanguageSetting);
-            Locate(AppStatus.LocationSetting);
+            Localize(AppState.LanguageSetting);
+            Locate(AppState.LocationSetting);
 
         }
 
@@ -58,7 +58,7 @@ namespace AppointmentScheduluer
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             var language = languageBox.SelectedIndex;
-            AppStatus.LanguageSetting = language;
+            AppState.LanguageSetting = language;
             Localize(language);
         }
 
@@ -75,7 +75,7 @@ namespace AppointmentScheduluer
             if(passwordBox.Text == "test" && usernameBox.Text == "test")
             {
                 // login succedes
-                statusLabel.Text = AppointmentScheduluer.Language.Label.LoginView.Status_Success[AppStatus.LanguageSetting];
+                statusLabel.Text = AppointmentScheduluer.Language.Label.LoginView.Status_Success[AppState.LanguageSetting];
                 statusLabel.ForeColor = Color.Black;
 
                 WeeklyView weeklyView = new WeeklyView();
@@ -93,7 +93,7 @@ namespace AppointmentScheduluer
             else
             {
                 // login fails
-                statusLabel.Text = AppointmentScheduluer.Language.Label.LoginView.Status_Failure[AppStatus.LanguageSetting];
+                statusLabel.Text = AppointmentScheduluer.Language.Label.LoginView.Status_Failure[AppState.LanguageSetting];
                 statusLabel.ForeColor = Color.Red;
             }
 
@@ -146,7 +146,7 @@ namespace AppointmentScheduluer
 
         private void locationBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            AppStatus.LocationSetting = locationBox.SelectedIndex;
+            AppState.LocationSetting = locationBox.SelectedIndex;
         }
 
         public void Localize(int Language)

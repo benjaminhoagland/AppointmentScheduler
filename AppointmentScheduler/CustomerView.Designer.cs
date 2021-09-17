@@ -32,12 +32,28 @@ namespace AppointmentScheduluer
             this.pageLabel = new System.Windows.Forms.Label();
             this.appNameLabel = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.deleteButton = new System.Windows.Forms.Button();
+            this.addButton = new System.Windows.Forms.Button();
+            this.searchButton = new System.Windows.Forms.Button();
             this.customerListBox = new System.Windows.Forms.ListBox();
             this.listLabel = new System.Windows.Forms.Label();
             this.searchBox = new System.Windows.Forms.TextBox();
             this.searchLabel = new System.Windows.Forms.Label();
             this.listGroupboxLabel = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.queryLabel = new System.Windows.Forms.Label();
+            this.cancelButton = new System.Windows.Forms.Button();
+            this.submitButton = new System.Windows.Forms.Button();
+            this.editButton = new System.Windows.Forms.Button();
+            this.statusButton = new System.Windows.Forms.Button();
+            this.statusLabel = new System.Windows.Forms.Label();
+            this.phoneBox = new System.Windows.Forms.TextBox();
+            this.phoneLabel = new System.Windows.Forms.Label();
+            this.postalCodeBox = new System.Windows.Forms.TextBox();
+            this.postalCodeLabel = new System.Windows.Forms.Label();
+            this.countryBox = new System.Windows.Forms.TextBox();
+            this.countryLabel = new System.Windows.Forms.Label();
             this.cityBox = new System.Windows.Forms.TextBox();
             this.cityLabel = new System.Windows.Forms.Label();
             this.address2Box = new System.Windows.Forms.TextBox();
@@ -48,20 +64,6 @@ namespace AppointmentScheduluer
             this.infoGroupboxLabel = new System.Windows.Forms.Label();
             this.nameLabel = new System.Windows.Forms.Label();
             this.backButton = new System.Windows.Forms.Button();
-            this.countryBox = new System.Windows.Forms.TextBox();
-            this.countryLabel = new System.Windows.Forms.Label();
-            this.postalCodeBox = new System.Windows.Forms.TextBox();
-            this.postalCodeLabel = new System.Windows.Forms.Label();
-            this.phoneBox = new System.Windows.Forms.TextBox();
-            this.phoneLabel = new System.Windows.Forms.Label();
-            this.statusLabel = new System.Windows.Forms.Label();
-            this.statusButton = new System.Windows.Forms.Button();
-            this.editButton = new System.Windows.Forms.Button();
-            this.submitButton = new System.Windows.Forms.Button();
-            this.cancelButton = new System.Windows.Forms.Button();
-            this.searchButton = new System.Windows.Forms.Button();
-            this.queryLabel = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -90,6 +92,8 @@ namespace AppointmentScheduluer
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.deleteButton);
+            this.groupBox1.Controls.Add(this.addButton);
             this.groupBox1.Controls.Add(this.searchButton);
             this.groupBox1.Controls.Add(this.customerListBox);
             this.groupBox1.Controls.Add(this.listLabel);
@@ -102,12 +106,45 @@ namespace AppointmentScheduluer
             this.groupBox1.TabIndex = 16;
             this.groupBox1.TabStop = false;
             // 
+            // deleteButton
+            // 
+            this.deleteButton.BackColor = System.Drawing.Color.Salmon;
+            this.deleteButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.deleteButton.Location = new System.Drawing.Point(269, 357);
+            this.deleteButton.Name = "deleteButton";
+            this.deleteButton.Size = new System.Drawing.Size(75, 23);
+            this.deleteButton.TabIndex = 31;
+            this.deleteButton.Text = "Delete";
+            this.deleteButton.UseVisualStyleBackColor = false;
+            this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
+            // 
+            // addButton
+            // 
+            this.addButton.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.addButton.Location = new System.Drawing.Point(73, 357);
+            this.addButton.Name = "addButton";
+            this.addButton.Size = new System.Drawing.Size(75, 23);
+            this.addButton.TabIndex = 30;
+            this.addButton.Text = "Add New";
+            this.addButton.UseVisualStyleBackColor = false;
+            this.addButton.Click += new System.EventHandler(this.addButton_Click);
+            // 
+            // searchButton
+            // 
+            this.searchButton.Location = new System.Drawing.Point(283, 31);
+            this.searchButton.Name = "searchButton";
+            this.searchButton.Size = new System.Drawing.Size(61, 23);
+            this.searchButton.TabIndex = 2;
+            this.searchButton.Text = "Search";
+            this.searchButton.UseVisualStyleBackColor = true;
+            this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
+            // 
             // customerListBox
             // 
             this.customerListBox.FormattingEnabled = true;
             this.customerListBox.Location = new System.Drawing.Point(73, 64);
             this.customerListBox.Name = "customerListBox";
-            this.customerListBox.Size = new System.Drawing.Size(271, 316);
+            this.customerListBox.Size = new System.Drawing.Size(271, 277);
             this.customerListBox.TabIndex = 3;
             this.customerListBox.SelectedIndexChanged += new System.EventHandler(this.customerListBox_SelectedIndexChanged);
             this.customerListBox.SelectedValueChanged += new System.EventHandler(this.customerListBox_SelectedValueChanged);
@@ -176,6 +213,124 @@ namespace AppointmentScheduluer
             this.groupBox2.Size = new System.Drawing.Size(371, 401);
             this.groupBox2.TabIndex = 17;
             this.groupBox2.TabStop = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(14, 35);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(40, 13);
+            this.label1.TabIndex = 29;
+            this.label1.Text = "Status:";
+            // 
+            // queryLabel
+            // 
+            this.queryLabel.AutoSize = true;
+            this.queryLabel.Location = new System.Drawing.Point(83, 35);
+            this.queryLabel.Name = "queryLabel";
+            this.queryLabel.Size = new System.Drawing.Size(38, 13);
+            this.queryLabel.TabIndex = 4;
+            this.queryLabel.Text = "Ready";
+            // 
+            // cancelButton
+            // 
+            this.cancelButton.BackColor = System.Drawing.Color.Orange;
+            this.cancelButton.Location = new System.Drawing.Point(190, 357);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(75, 23);
+            this.cancelButton.TabIndex = 28;
+            this.cancelButton.Text = "Cancel";
+            this.cancelButton.UseVisualStyleBackColor = false;
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            // 
+            // submitButton
+            // 
+            this.submitButton.BackColor = System.Drawing.Color.LightSkyBlue;
+            this.submitButton.Location = new System.Drawing.Point(271, 357);
+            this.submitButton.Name = "submitButton";
+            this.submitButton.Size = new System.Drawing.Size(75, 23);
+            this.submitButton.TabIndex = 27;
+            this.submitButton.Text = "Submit";
+            this.submitButton.UseVisualStyleBackColor = false;
+            this.submitButton.Click += new System.EventHandler(this.submitButton_Click);
+            // 
+            // editButton
+            // 
+            this.editButton.Location = new System.Drawing.Point(17, 357);
+            this.editButton.Name = "editButton";
+            this.editButton.Size = new System.Drawing.Size(75, 23);
+            this.editButton.TabIndex = 4;
+            this.editButton.Text = "Edit";
+            this.editButton.UseVisualStyleBackColor = true;
+            this.editButton.Click += new System.EventHandler(this.editButton_Click);
+            // 
+            // statusButton
+            // 
+            this.statusButton.Location = new System.Drawing.Point(86, 274);
+            this.statusButton.Name = "statusButton";
+            this.statusButton.Size = new System.Drawing.Size(75, 23);
+            this.statusButton.TabIndex = 25;
+            this.statusButton.Text = "Active";
+            this.statusButton.UseVisualStyleBackColor = true;
+            this.statusButton.Click += new System.EventHandler(this.statusButton_Click);
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.AutoSize = true;
+            this.statusLabel.Location = new System.Drawing.Point(14, 279);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(37, 13);
+            this.statusLabel.TabIndex = 23;
+            this.statusLabel.Text = "Status";
+            this.statusLabel.Click += new System.EventHandler(this.label1_Click_2);
+            // 
+            // phoneBox
+            // 
+            this.phoneBox.Location = new System.Drawing.Point(86, 244);
+            this.phoneBox.Name = "phoneBox";
+            this.phoneBox.Size = new System.Drawing.Size(260, 20);
+            this.phoneBox.TabIndex = 22;
+            // 
+            // phoneLabel
+            // 
+            this.phoneLabel.AutoSize = true;
+            this.phoneLabel.Location = new System.Drawing.Point(14, 248);
+            this.phoneLabel.Name = "phoneLabel";
+            this.phoneLabel.Size = new System.Drawing.Size(38, 13);
+            this.phoneLabel.TabIndex = 21;
+            this.phoneLabel.Text = "Phone";
+            // 
+            // postalCodeBox
+            // 
+            this.postalCodeBox.Location = new System.Drawing.Point(86, 184);
+            this.postalCodeBox.Name = "postalCodeBox";
+            this.postalCodeBox.Size = new System.Drawing.Size(260, 20);
+            this.postalCodeBox.TabIndex = 16;
+            // 
+            // postalCodeLabel
+            // 
+            this.postalCodeLabel.AutoSize = true;
+            this.postalCodeLabel.Location = new System.Drawing.Point(14, 188);
+            this.postalCodeLabel.Name = "postalCodeLabel";
+            this.postalCodeLabel.Size = new System.Drawing.Size(64, 13);
+            this.postalCodeLabel.TabIndex = 19;
+            this.postalCodeLabel.Text = "Postal Code";
+            // 
+            // countryBox
+            // 
+            this.countryBox.Location = new System.Drawing.Point(86, 214);
+            this.countryBox.Name = "countryBox";
+            this.countryBox.Size = new System.Drawing.Size(260, 20);
+            this.countryBox.TabIndex = 18;
+            // 
+            // countryLabel
+            // 
+            this.countryLabel.AutoSize = true;
+            this.countryLabel.Location = new System.Drawing.Point(14, 218);
+            this.countryLabel.Name = "countryLabel";
+            this.countryLabel.Size = new System.Drawing.Size(43, 13);
+            this.countryLabel.TabIndex = 15;
+            this.countryLabel.Text = "Country";
             // 
             // cityBox
             // 
@@ -262,134 +417,6 @@ namespace AppointmentScheduluer
             this.backButton.UseVisualStyleBackColor = true;
             this.backButton.Click += new System.EventHandler(this.backButton_Click);
             // 
-            // countryBox
-            // 
-            this.countryBox.Location = new System.Drawing.Point(86, 214);
-            this.countryBox.Name = "countryBox";
-            this.countryBox.Size = new System.Drawing.Size(260, 20);
-            this.countryBox.TabIndex = 18;
-            // 
-            // countryLabel
-            // 
-            this.countryLabel.AutoSize = true;
-            this.countryLabel.Location = new System.Drawing.Point(14, 218);
-            this.countryLabel.Name = "countryLabel";
-            this.countryLabel.Size = new System.Drawing.Size(43, 13);
-            this.countryLabel.TabIndex = 15;
-            this.countryLabel.Text = "Country";
-            // 
-            // postalCodeBox
-            // 
-            this.postalCodeBox.Location = new System.Drawing.Point(86, 184);
-            this.postalCodeBox.Name = "postalCodeBox";
-            this.postalCodeBox.Size = new System.Drawing.Size(260, 20);
-            this.postalCodeBox.TabIndex = 16;
-            // 
-            // postalCodeLabel
-            // 
-            this.postalCodeLabel.AutoSize = true;
-            this.postalCodeLabel.Location = new System.Drawing.Point(14, 188);
-            this.postalCodeLabel.Name = "postalCodeLabel";
-            this.postalCodeLabel.Size = new System.Drawing.Size(64, 13);
-            this.postalCodeLabel.TabIndex = 19;
-            this.postalCodeLabel.Text = "Postal Code";
-            // 
-            // phoneBox
-            // 
-            this.phoneBox.Location = new System.Drawing.Point(86, 244);
-            this.phoneBox.Name = "phoneBox";
-            this.phoneBox.Size = new System.Drawing.Size(260, 20);
-            this.phoneBox.TabIndex = 22;
-            // 
-            // phoneLabel
-            // 
-            this.phoneLabel.AutoSize = true;
-            this.phoneLabel.Location = new System.Drawing.Point(14, 248);
-            this.phoneLabel.Name = "phoneLabel";
-            this.phoneLabel.Size = new System.Drawing.Size(38, 13);
-            this.phoneLabel.TabIndex = 21;
-            this.phoneLabel.Text = "Phone";
-            // 
-            // statusLabel
-            // 
-            this.statusLabel.AutoSize = true;
-            this.statusLabel.Location = new System.Drawing.Point(14, 279);
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(37, 13);
-            this.statusLabel.TabIndex = 23;
-            this.statusLabel.Text = "Status";
-            this.statusLabel.Click += new System.EventHandler(this.label1_Click_2);
-            // 
-            // statusButton
-            // 
-            this.statusButton.Location = new System.Drawing.Point(86, 274);
-            this.statusButton.Name = "statusButton";
-            this.statusButton.Size = new System.Drawing.Size(75, 23);
-            this.statusButton.TabIndex = 25;
-            this.statusButton.Text = "Active";
-            this.statusButton.UseVisualStyleBackColor = true;
-            this.statusButton.Click += new System.EventHandler(this.statusButton_Click);
-            // 
-            // editButton
-            // 
-            this.editButton.Location = new System.Drawing.Point(17, 357);
-            this.editButton.Name = "editButton";
-            this.editButton.Size = new System.Drawing.Size(75, 23);
-            this.editButton.TabIndex = 4;
-            this.editButton.Text = "Edit";
-            this.editButton.UseVisualStyleBackColor = true;
-            this.editButton.Click += new System.EventHandler(this.editButton_Click);
-            // 
-            // submitButton
-            // 
-            this.submitButton.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.submitButton.Location = new System.Drawing.Point(271, 357);
-            this.submitButton.Name = "submitButton";
-            this.submitButton.Size = new System.Drawing.Size(75, 23);
-            this.submitButton.TabIndex = 27;
-            this.submitButton.Text = "Submit";
-            this.submitButton.UseVisualStyleBackColor = false;
-            this.submitButton.Click += new System.EventHandler(this.submitButton_Click);
-            // 
-            // cancelButton
-            // 
-            this.cancelButton.BackColor = System.Drawing.Color.Orange;
-            this.cancelButton.Location = new System.Drawing.Point(190, 357);
-            this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 28;
-            this.cancelButton.Text = "Cancel";
-            this.cancelButton.UseVisualStyleBackColor = false;
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
-            // 
-            // searchButton
-            // 
-            this.searchButton.Location = new System.Drawing.Point(283, 31);
-            this.searchButton.Name = "searchButton";
-            this.searchButton.Size = new System.Drawing.Size(61, 23);
-            this.searchButton.TabIndex = 2;
-            this.searchButton.Text = "Search";
-            this.searchButton.UseVisualStyleBackColor = true;
-            this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
-            // 
-            // queryLabel
-            // 
-            this.queryLabel.AutoSize = true;
-            this.queryLabel.Location = new System.Drawing.Point(83, 35);
-            this.queryLabel.Name = "queryLabel";
-            this.queryLabel.Size = new System.Drawing.Size(38, 13);
-            this.queryLabel.TabIndex = 4;
-            this.queryLabel.Text = "Ready";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(14, 35);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(40, 13);
-            this.label1.TabIndex = 29;
-            this.label1.Text = "Status:";
-            // 
             // CustomerView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -403,6 +430,7 @@ namespace AppointmentScheduluer
             this.Name = "CustomerView";
             this.Text = "CustomerView";
             this.Load += new System.EventHandler(this.CustomerView_Load);
+            this.Shown += new System.EventHandler(this.CustomerView_Shown);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -447,5 +475,7 @@ namespace AppointmentScheduluer
         private System.Windows.Forms.Button searchButton;
         private System.Windows.Forms.Label queryLabel;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button deleteButton;
+        private System.Windows.Forms.Button addButton;
     }
 }

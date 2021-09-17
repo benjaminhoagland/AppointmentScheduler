@@ -14,14 +14,13 @@ namespace AppointmentScheduluer
 {
     public partial class CustomerView : Form
     {
-        public static BindingList<string> VisibleCustomerNames = new BindingList<string>() { "this is a test line", "this is another test line" };
         // flag:todo make "selectedCustomer" a static member of this class, and store the various retrieved info there 
         // including the record IDs for quick retrieval
         public CustomerView()
         {
             InitializeComponent();
-            Localize(AppStatus.LanguageSetting);
-            customerListBox.DataSource = VisibleCustomerNames;
+            Localize(AppState.LanguageSetting);
+            customerListBox.DataSource = AppState.VisibleCustomerNames;
 
 
         }
@@ -34,6 +33,9 @@ namespace AppointmentScheduluer
             searchLabel.Text = AppointmentScheduluer.Language.Label.CustomerView.searchLabel[Language];
             searchButton.Text = AppointmentScheduluer.Language.Label.CustomerView.searchLabel[Language];
             listLabel.Text = AppointmentScheduluer.Language.Label.CustomerView.listLabel[Language];
+
+            addButton.Text = AppointmentScheduluer.Language.Label.CustomerView.addButton[Language];
+            deleteButton.Text = AppointmentScheduluer.Language.Label.CustomerView.deleteButton[Language];
 
             infoGroupboxLabel.Text = AppointmentScheduluer.Language.Label.CustomerView.infoGroupboxLabel[Language];
             nameLabel.Text = AppointmentScheduluer.Language.Label.CustomerView.nameLabel[Language];
@@ -53,63 +55,34 @@ namespace AppointmentScheduluer
             backButton.Text = AppointmentScheduluer.Language.Label.CustomerView.backButton[Language];
         }
 
+        private void CustomerView_Shown(object sender, EventArgs e)
+        {
+
+            searchButton_Click(sender, e);
+        }
         private void CustomerView_Load(object sender, EventArgs e)
         {
-            // connect database
-            try
-            {
-                var connection = Data.Connect();
-                connection.Open();
-                string query = "SELECT * FROM customer;";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                // command.Parameters.AddWithValue("@table", "country");
-                VisibleCustomerNames.Clear();
-                MySqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    VisibleCustomerNames.Add(reader[1].ToString());
-                }
-                reader.Close();
-                connection.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-
             // attach the keyup event
             searchBox.KeyUp += TextBoxKeyUp;
             DisableCustomerEdit();
         }
 
-        private void pageLabel_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void backButton_Click(object sender, EventArgs e)
         {
-            this.Close();
+            this.Hide();
         }
 
         private void customerListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            queryLabel.Text = "Querying...";
+            queryLabel.Refresh();
             try
             {
                 // no action is needed if this fails, maybe we can call "clear customer information" or something similar
-                if(VisibleCustomerNames.Count > 0)
+                if(AppState.VisibleCustomerNames.Count > 0)
                 {
-                    DisplayCustomerInformation(customerListBox.SelectedItem.ToString());
+                    var customerId = FindIDByName(customerListBox.SelectedItem.ToString());
+                    LoadCustomer(customerId);
                 }
                 
             }
@@ -118,51 +91,6 @@ namespace AppointmentScheduluer
                 Console.WriteLine(ex.ToString());
                 Console.WriteLine(ex.Message.ToString());
             }
-            /*
-            string selectedCustomer = "";
-            try
-            {
-                var connection = Data.Connect();
-                connection.Open();
-                string query = "SELECT * FROM customer WHERE customerName = '" + customerListBox.SelectedItem  + "';";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                // command.Parameters.AddWithValue("@table", "country");
-                VisibleCustomerNames.Clear();
-                MySqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    selectedCustomer = (reader[1].ToString());
-                    break;
-                }
-                reader.Close();
-                connection.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-            nameBox.Text = selectedCustomer;
-            */
-        }
-
-        private void label1_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click_2(object sender, EventArgs e)
-        {
-
-        }
-
-        private void statusButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void customerListBox_SelectedValueChanged(object sender, EventArgs e)
-        {
-
         }
         private void TextBoxKeyUp(object sender, KeyEventArgs e)
         {
@@ -174,8 +102,10 @@ namespace AppointmentScheduluer
         }
         private void searchButton_Click(object sender, EventArgs e)
         {
+            queryLabel.Text = "Querying...";
+            queryLabel.Refresh();
             var searchText = searchBox.Text;
-            VisibleCustomerNames.Clear();
+            AppState.VisibleCustomerNames.Clear();
             ClearCustomerInformation();
             try
             {
@@ -183,12 +113,11 @@ namespace AppointmentScheduluer
                 connection.Open();
                 string query = "SELECT * FROM customer WHERE customerName LIKE '%" + searchText + "%';";
                 MySqlCommand command = new MySqlCommand(query, connection);
-                // command.Parameters.AddWithValue("@table", "country");
-                VisibleCustomerNames.Clear();
+                AppState.VisibleCustomerNames.Clear();
                 MySqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    VisibleCustomerNames.Add(reader[1].ToString());
+                    AppState.VisibleCustomerNames.Add(reader[1].ToString());
                 }
                 reader.Close();
                 connection.Close();
@@ -200,15 +129,19 @@ namespace AppointmentScheduluer
             if (customerListBox.Items.Count > 0)
             {
                 customerListBox.SelectedIndex = 0;
-                // customerListBox.Focus();
-                DisplayCustomerInformation(customerListBox.SelectedItem.ToString());
+                
+                var customerId = FindIDByName(customerListBox.SelectedItem.ToString());
+                LoadCustomer(customerId);
                 
             }
         }
-        private void DisplayCustomerInformation(string customerName)
+        private void LoadCustomer(int customerId)
         {
-            queryLabel.Text = "Querying...";
-            queryLabel.Refresh();
+            Customer.Selected.ID = customerId;
+            DisplaySelectedCustomerInformation();
+        }
+        private int FindIDByName(string customerName)
+        {
             var matchingCustomerNames = Data.Select("customer", 1, "customerName LIKE '%" + customerName + "%';");
             var matchingCustomerIds = Data.Select("customer", 0, "customerName LIKE '%" + customerName + "%';");
             var matchingCustomers = new List<(
@@ -230,7 +163,7 @@ namespace AppointmentScheduluer
                     name: "default"
                 );
             if (matchingCustomers.Count == 0)
-            { return; }
+            { return -1; }
             else if(matchingCustomers.Count == 1)
             { 
                 selectedCustomer = (
@@ -246,13 +179,25 @@ namespace AppointmentScheduluer
                         matchingCustomers[index].name
                     );
             }
-            nameBox.Text = Data.Select("customer", 1, "customerId = \'" + selectedCustomer.id + "\';").FirstOrDefault();
-            var addressId = Data.Select("customer", 2, "customerId = \'" + selectedCustomer.id + "\';").FirstOrDefault();
-            addressBox.Text = Data.Select("address", 1, "addressId = \'" + addressId + "\';").FirstOrDefault();
+            return selectedCustomer.id;
+        }
 
-            queryLabel.Text = "Ready";
+        private void DisplaySelectedCustomerInformation()
+        {
+            nameBox.Text = Customer.Selected.Name;
+            addressBox.Text = Customer.Selected.Address;
+            address2Box.Text = Customer.Selected.Address2;
+            cityBox.Text = Customer.Selected.City;
+            postalCodeBox.Text = Customer.Selected.PostalCode;
+            countryBox.Text = Customer.Selected.Country;
+            phoneBox.Text = Customer.Selected.Phone;
+            statusButton.Text = Customer.Selected.Active == true ? 
+                Language.Label.CustomerView.activeButton[AppState.LanguageSetting] : 
+                Language.Label.CustomerView.inactiveButton[AppState.LanguageSetting];
+            queryLabel.Text = "Ready      ";
             queryLabel.Refresh();
         }
+
         private void ClearCustomerInformation()
         {
             nameBox.Text = "";
@@ -319,20 +264,62 @@ namespace AppointmentScheduluer
         {
             DisableCustomerEdit();
             ClearCustomerInformation();
-            DisplayCustomerInformation(customerListBox.SelectedItem.ToString());
+            DisplaySelectedCustomerInformation();
         }
-
         private void editButton_Click(object sender, EventArgs e)
         {
             EnableCustomerEdit();
             queryLabel.Text = "Editing...";
             queryLabel.Refresh();
         }
-
         private void submitButton_Click(object sender, EventArgs e)
         {
             queryLabel.Text = "Processing...";
             queryLabel.Refresh();
+        }
+        private void label1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+        private void label1_Click_2(object sender, EventArgs e)
+        {
+
+        }
+        private void statusButton_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void customerListBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void pageLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            
+        }
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void addButton_Click(object sender, EventArgs e)
+        {
+            addButton.Enabled = false;
+            Customer.Add();
+            searchButton_Click(sender, e);
+            addButton.Enabled = true;
+        }
+
+        private void deleteButton_Click(object sender, EventArgs e)
+        {
+            deleteButton.Enabled = false;
+            Customer.Delete();
+            searchButton_Click(sender, e);
+            deleteButton.Enabled = true;    
         }
     }
 }

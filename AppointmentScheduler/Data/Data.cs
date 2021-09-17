@@ -302,6 +302,7 @@ namespace AppointmentScheduluer
             lastUpdate TIMESTAMP
             lastUpdateBy VARCHAR(40)
             */
+
             try
             {
                 var database = Data.Connect();
@@ -325,6 +326,7 @@ namespace AppointmentScheduluer
 
                 // close database
                 database.Close();
+                Customer.count++;
             }
             catch (Exception ex)
             {
@@ -445,6 +447,7 @@ namespace AppointmentScheduluer
             {
                 Console.WriteLine(ex.ToString());
             }
+
         }
         public static void Clear()
         {
@@ -458,6 +461,7 @@ namespace AppointmentScheduluer
             {
                 InsertUser(userName, password);
             }
+            Customer.count = 0;
         }
     }
 }
