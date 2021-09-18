@@ -65,6 +65,8 @@ namespace AppointmentScheduluer
             // attach the keyup event
             searchBox.KeyUp += TextBoxKeyUp;
             DisableCustomerEdit();
+            EnableCustomerSearch();
+            Customer.Count = Data.Select("customer", 0).Count;
         }
 
         private void backButton_Click(object sender, EventArgs e)
@@ -137,7 +139,7 @@ namespace AppointmentScheduluer
         }
         private void LoadCustomer(int customerId)
         {
-            Customer.Selected.ID = customerId;
+            Customer.Selected.CustomerId = customerId;
             DisplaySelectedCustomerInformation();
         }
         private int FindIDByName(string customerName)
@@ -212,13 +214,17 @@ namespace AppointmentScheduluer
 
             
         }
+        private void DisableCustomerSearch()
+        {
+            searchBox.Enabled = false;
+            searchButton.Enabled = false;
+            customerListBox.Enabled = false;
+            addButton.Enabled = false;
+            deleteButton.Enabled = false;
+            groupBox1.Refresh();
+        }
         private void DisableCustomerEdit()
         {
-            searchBox.Enabled = true;
-            searchButton.Enabled = true;
-            customerListBox.Enabled = true;
-            groupBox1.Refresh();
-
             nameBox.Enabled = false;
             addressBox.Enabled = false;
             address2Box.Enabled = false;
@@ -237,6 +243,17 @@ namespace AppointmentScheduluer
             groupBox2.Refresh();
 
         }
+        private void EnableCustomerSearch()
+        {
+
+
+            searchBox.Enabled = true;
+            searchButton.Enabled = true;
+            customerListBox.Enabled = true;
+            addButton.Enabled = true;
+            deleteButton.Enabled = true;
+            groupBox1.Refresh();
+        }
         private void EnableCustomerEdit()
         {
             nameBox.Enabled = true;
@@ -254,21 +271,35 @@ namespace AppointmentScheduluer
             cancelButton.BackColor = Color.Orange;
             submitButton.Enabled = true;
             submitButton.BackColor = Color.LightSkyBlue;
+            groupBox2.Refresh();
 
-            searchBox.Enabled = false;
-            searchButton.Enabled = false;
-            customerListBox.Enabled = false;
         }
+        private void SubmitChanges()
+        {
+            var newName = nameBox.Text;
+            //set value to db
+            Data.UpdateCustomer(Customer.Selected.CustomerId, nameBox.Text, statusButton.Text == Language.Label.CustomerView.activeButton[AppState.LanguageSetting] ? true : false);
+            Data.UpdateAddress(
+                Customer.Selected.AddressId,
+                addressBox.Text,
+                address2Box.Text,
+                postalCodeBox.Text,
+                phoneBox.Text);
+            Data.UpdateCity(Customer.Selected.CityId, cityBox.Text);
+            Data.UpdateCountry(Customer.Selected.CountryId, countryBox.Text);
 
+        }
         private void cancelButton_Click(object sender, EventArgs e)
         {
             DisableCustomerEdit();
+            EnableCustomerSearch();
             ClearCustomerInformation();
             DisplaySelectedCustomerInformation();
         }
         private void editButton_Click(object sender, EventArgs e)
         {
             EnableCustomerEdit();
+            DisableCustomerSearch();
             queryLabel.Text = "Editing...";
             queryLabel.Refresh();
         }
@@ -276,6 +307,11 @@ namespace AppointmentScheduluer
         {
             queryLabel.Text = "Processing...";
             queryLabel.Refresh();
+            DisableCustomerEdit();
+            SubmitChanges();
+            EnableCustomerSearch();
+            searchButton_Click(sender, e);
+            customerListBox_SelectedIndexChanged(sender, e);
         }
         private void label1_Click_1(object sender, EventArgs e)
         {
@@ -287,7 +323,10 @@ namespace AppointmentScheduluer
         }
         private void statusButton_Click(object sender, EventArgs e)
         {
-
+            string current = statusButton.Text;
+            string active = AppointmentScheduluer.Language.Label.CustomerView.activeButton[AppState.LanguageSetting];
+            string inactive = AppointmentScheduluer.Language.Label.CustomerView.inactiveButton[AppState.LanguageSetting];
+            statusButton.Text = current == active ? inactive : active;
         }
         private void customerListBox_SelectedValueChanged(object sender, EventArgs e)
         {
@@ -316,6 +355,19 @@ namespace AppointmentScheduluer
 
         private void deleteButton_Click(object sender, EventArgs e)
         {
+            const string message =
+                "Are you sure you want to delete the selected customer?";
+            const string caption = "Delete Warning";
+            var result = MessageBox.Show(message, caption,
+                                         MessageBoxButtons.YesNo,
+                                         MessageBoxIcon.Question);
+
+            // If the no button was pressed ...
+            if (result == DialogResult.Yes)
+            {
+                Customer.Delete();
+            }
+
             deleteButton.Enabled = false;
             Customer.Delete();
             searchButton_Click(sender, e);

@@ -25,7 +25,8 @@ namespace AppointmentScheduluer
 
         /// <summary>
         /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        /// the contents of th
+        /// method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
@@ -303,6 +304,7 @@ namespace AppointmentScheduluer
             // postalCodeBox
             // 
             this.postalCodeBox.Location = new System.Drawing.Point(86, 184);
+            this.postalCodeBox.MaxLength = 10;
             this.postalCodeBox.Name = "postalCodeBox";
             this.postalCodeBox.Size = new System.Drawing.Size(260, 20);
             this.postalCodeBox.TabIndex = 16;

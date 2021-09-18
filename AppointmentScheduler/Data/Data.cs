@@ -11,7 +11,15 @@ namespace AppointmentScheduluer
 {
     public static class Data
     {
-        public static List<string> tables = new List<string>() { "country", "city", "address", "customer", "user", "appointment" };
+        public static List<string> tables = new List<string>() 
+        { 
+            "customer", 
+            "address", 
+            "city", 
+            "country", 
+            "user", 
+            "appointment" 
+        };
         public static MySqlConnection Connect()
         {
             var connectionString = "server=wgudb.ucertify.com;database=U08i7a;port=3306;userid=U08i7a;password=53689299403;useaffectedrows=True;allowuservariables=True;sslmode=None";
@@ -20,6 +28,13 @@ namespace AppointmentScheduluer
         public static void Populate()
         {
             // fill sample dataset into database
+            var users = new List<(string userName, string password)>();
+            users.Add(("test", "test"));
+            foreach (var (userName, password) in users)
+            {
+                InsertUser(userName, password);
+            }
+
             var countries = new List<string>()
             {
                 "United Kingdom",
@@ -72,7 +87,6 @@ namespace AppointmentScheduluer
             customers.Add(("John Smith", "10 Downing Street", true));
             customers.Add(("Jane Smith", "10 Downing Street", true));
             customers.Add(("Pablo Diaz", "1 Main St", true));
-            customers.Add(("Pablo Diaz", "2 Main St", true));
             customers.Add(("Claudia Diaz", "1 Main St", true));
             foreach (var (customerName, address, active) in customers)
             {
@@ -227,11 +241,12 @@ namespace AppointmentScheduluer
                 var database = Data.Connect();
                 database.Open();
 
+                int userId = 0;
                 var command = database.CreateCommand();
                 command.CommandText = "INSERT INTO appointment(customerId, userId, title, description, location, contact, type, url, start, end, createdate, createdBy, lastupdateby)"
                     + " VALUES(?customerId, ?userId, ?title, ?description, ?location, ?contact, ?type, ?url, ?start, ?end, ?createdate, ?createdBy, ?lastupdateby)";
                 command.Parameters.Add("?customerId", MySqlDbType.Int32).Value = customerId;
-                command.Parameters.Add("?userId", MySqlDbType.Int32).Value = 0;
+                command.Parameters.Add("?userId", MySqlDbType.Int32).Value = userId;
                 command.Parameters.Add("?title", MySqlDbType.VarChar).Value = title;
                 command.Parameters.Add("?description", MySqlDbType.Text).Value = description;
                 command.Parameters.Add("?location", MySqlDbType.Text).Value = location;
@@ -243,7 +258,17 @@ namespace AppointmentScheduluer
                 command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                 command.Parameters.Add("?createdBy", MySqlDbType.VarChar).Value = createdBy;
                 command.Parameters.Add("?lastupdateby", MySqlDbType.VarChar).Value = lastupdateby;
+                /*
+                MessageBox.Show("command.CommandText is " + command.CommandText);
+                
+                MessageBox.Show(String.Format("parameters are customerId = {0},@ userId = {1},@ title = {2},@ description = {3},@ location = {4},@ contact = {5},@ type = {6},@ url = {7},@ start.ToString(\"yyyy - MM - dd hh: mm:ss\") = {8},@ end.ToString(\"yyyy - MM - dd hh: mm:ss\")= {9}  ", 
+                    customerId, userId,
+                    title, description,
+                    location, contact,
+                    type, url,
+                    start.ToString("yyyy-MM-dd hh:mm:ss"), end.ToString("yyyy-MM-dd hh:mm:ss")).Replace("@", System.Environment.NewLine));
                 command.ExecuteNonQuery();
+                */
 
 
                 // close database
@@ -291,6 +316,29 @@ namespace AppointmentScheduluer
                 Console.WriteLine(ex.ToString());
             }
         }
+        public static void UpdateCustomer(int customerId, string newName, bool newStatus)
+        {
+            try
+            {
+                var database = Data.Connect();
+                database.Open();
+                
+                var command = database.CreateCommand();
+                command.CommandText = "UPDATE customer SET customerName = ?customerName, active = ?active  WHERE customerId = ?customerId;";
+                command.Parameters.AddWithValue("?customerName", newName);
+                command.Parameters.AddWithValue("?active", newStatus);
+                command.Parameters.AddWithValue("?customerId", customerId);
+                command.ExecuteNonQuery();
+
+
+                // close database
+                database.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
         public static void InsertCustomer(string customerName, string address, bool active, string createdBy = "Initialization", string lastupdateby = "Initialization")
         {
             /*
@@ -309,14 +357,14 @@ namespace AppointmentScheduluer
                 database.Open();
 
                 // get id
-                var addressId = Select("address", 0, "address = \'" + address + "\'");
-
+                var addressId = Select("address", 0, "address = \'" + address + "\'").FirstOrDefault();
+                // MessageBox.Show("addressId is " + addressId);
                 // insert 
                 var command = database.CreateCommand();
                 command.CommandText = "INSERT INTO customer(customerName, addressId, active, createdate, createdBy, lastupdateby)"
                     + " VALUES(?customerName, ?addressId, ?active, ?createdate, ?createdBy, ?lastupdateby)";
                 command.Parameters.Add("?customerName", MySqlDbType.VarChar).Value = customerName;
-                command.Parameters.Add("?addressId", MySqlDbType.Int32).Value = addressId.FirstOrDefault(); // very problematic but will work for the test data
+                command.Parameters.Add("?addressId", MySqlDbType.Int32).Value = addressId; // very problematic but will work for the test data
                 command.Parameters.Add("?active", MySqlDbType.Byte).Value = active;
                 command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                 command.Parameters.Add("?createdBy", MySqlDbType.VarChar).Value = createdBy;
@@ -326,7 +374,32 @@ namespace AppointmentScheduluer
 
                 // close database
                 database.Close();
-                Customer.count++;
+                Customer.Count++;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+        public static void UpdateAddress(int addressId, string newAddress, string newAddress2, string newPostalCode, string newPhone)
+        {
+            try
+            {
+                var database = Data.Connect();
+                database.Open();
+
+                var command = database.CreateCommand();
+                command.CommandText = "UPDATE address SET address = ?address, address2 = ?address2, postalCode = ?postalCode, phone = ?phone WHERE addressId = ?addressId;";
+                command.Parameters.AddWithValue("?addressId", addressId);
+                command.Parameters.AddWithValue("?address", newAddress);
+                command.Parameters.AddWithValue("?address2", newAddress2);
+                command.Parameters.AddWithValue("?postalCode", newPostalCode);
+                command.Parameters.AddWithValue("?phone", newPhone);
+                command.ExecuteNonQuery();
+
+
+                // close database
+                database.Close();
             }
             catch (Exception ex)
             {
@@ -377,6 +450,31 @@ namespace AppointmentScheduluer
                 Console.WriteLine(ex.ToString());
             }
         }
+        public static void UpdateCity(int cityId, string city)
+        {
+            try
+            {
+                var database = Data.Connect();
+                database.Open();
+                // MessageBox.Show("updating city with ID: " + cityId);
+                var command = database.CreateCommand();
+                command.CommandText = "UPDATE city SET city = ?city WHERE cityId = ?cityId;";
+                command.Parameters.AddWithValue("?cityId", cityId);
+                command.Parameters.AddWithValue("?city", city);
+                // MessageBox.Show("command.CommandText is " + command.CommandText);
+                // MessageBox.Show("newName is " + city);
+                // MessageBox.Show("cityId is " + cityId);
+                command.ExecuteNonQuery();
+
+
+                // close database
+                database.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
         public static void InsertCity(string city, string country, string createdBy = "Initialization", string lastupdateby = "Initialization")
         {
             try
@@ -407,6 +505,31 @@ namespace AppointmentScheduluer
                 Console.WriteLine(ex.ToString());
             }
         }
+        public static void UpdateCountry(int countryId, string country)
+        {
+            try
+            {
+                var database = Data.Connect();
+                database.Open();
+
+                var command = database.CreateCommand();
+                command.CommandText = "UPDATE country SET country = ?country WHERE countryId = ?countryId;";
+                command.Parameters.AddWithValue("?country", country);
+                command.Parameters.AddWithValue("?countryId", countryId);
+                // MessageBox.Show("command.CommandText is " + command.CommandText);
+                // MessageBox.Show("country is " + country);
+                // MessageBox.Show("countryId is " + countryId);
+                command.ExecuteNonQuery();
+
+
+                // close database
+                database.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
         public static void InsertCountry(string country, string createdBy = "Initialization", string lastupdateby = "Initialization")
         {
             try
@@ -422,9 +545,27 @@ namespace AppointmentScheduluer
                 command.Parameters.Add("?createdBy", MySqlDbType.VarChar).Value = createdBy;
                 command.Parameters.Add("?lastupdateby", MySqlDbType.VarChar).Value = lastupdateby;
                 command.ExecuteNonQuery();
-
-
+                // MessageBox.Show("created country with a name of " + country);
+                var auditedId = Data.Select("country", 0, "country = \'" + country + "\';").FirstOrDefault();
+                // MessageBox.Show("auditedId is " + auditedId);
                 // close database
+                database.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+        private static void ResetAutoIncrementValues(string Table)
+        {
+            
+            try
+            {
+                var database = Data.Connect();
+                database.Open();
+                var command = database.CreateCommand();
+                command.CommandText = String.Format("ALTER TABLE {0} AUTO_INCREMENT = 1", Table);
+                command.ExecuteNonQuery();
                 database.Close();
             }
             catch (Exception ex)
@@ -454,14 +595,9 @@ namespace AppointmentScheduluer
             foreach (var table in tables)
             {
                 DeleteAllTableRecords(table);
+                ResetAutoIncrementValues(table);
             }
-            var credentials = new List<(string userName, string password)>();
-            credentials.Add(("test", "test"));
-            foreach(var (userName, password) in credentials)
-            {
-                InsertUser(userName, password);
-            }
-            Customer.count = 0;
+            Customer.Count = 0;
         }
     }
 }
