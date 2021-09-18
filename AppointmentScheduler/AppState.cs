@@ -16,6 +16,8 @@ namespace AppointmentScheduluer
     {
         public static BindingList<string> VisibleCustomerNames = new BindingList<string>() { "this is a test line", "this is another test line" };
 
+        public static DateTime SelectedWeek = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
+
         private static int languageSetting = 0;
         public static int LanguageSetting
         {

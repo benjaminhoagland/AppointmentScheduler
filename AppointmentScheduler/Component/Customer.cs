@@ -109,6 +109,7 @@ namespace AppointmentScheduluer
             Phone
             Active
             */
+
             if(Customer.Selected.CustomerId > 0)
             {
                 try
@@ -116,6 +117,9 @@ namespace AppointmentScheduluer
                     var database = Data.Connect();
                     database.Open();
                     var command = database.CreateCommand();
+                    command.CommandText = "DELETE FROM appointment WHERE customerId = \'" + Selected.CustomerId + "\';";
+                    command.ExecuteNonQuery();
+                    command = database.CreateCommand();
                     command.CommandText = "DELETE FROM customer WHERE customerId = \'" + Selected.CustomerId + "\';";
                     command.ExecuteNonQuery();
                     database.Close();

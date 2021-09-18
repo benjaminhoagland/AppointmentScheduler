@@ -13,12 +13,12 @@ namespace AppointmentScheduluer
     {
         public static List<string> tables = new List<string>() 
         { 
+            "appointment",
             "customer", 
             "address", 
             "city", 
             "country", 
-            "user", 
-            "appointment" 
+            "user"
         };
         public static MySqlConnection Connect()
         {
@@ -107,15 +107,15 @@ namespace AppointmentScheduluer
             appointments.Add
                 (
                     (
-                        0,
+                        4,
                         "Appointment 1",
                         "This is the first appointment",
                         "New York, New York",
                         "Contact Information",
                         "Initial Appointment",
                         "someaddress.domain.com",
-                        new DateTime(2020, 12, 01, 8, 0, 0),
-                        new DateTime(2020, 12, 01, 9, 0, 0)
+                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(0).AddHours(11),
+                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(0).AddHours(12)
                      )
                 );
             appointments.Add
@@ -128,8 +128,8 @@ namespace AppointmentScheduluer
                         "Contact Information",
                         "Initial Appointment",
                         "someaddress.domain.com",
-                        new DateTime(2020, 12, 01, 9, 0, 0),
-                        new DateTime(2020, 12, 01, 10, 0, 0)
+                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(0).AddHours(9),
+                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(0).AddHours(10)
                      )
                 );
             appointments.Add
@@ -142,8 +142,8 @@ namespace AppointmentScheduluer
                         "Contact Information",
                         "Follow-Up Appointment",
                         "someaddress.domain.com",
-                        new DateTime(2020, 12, 01, 10, 0, 0),
-                        new DateTime(2020, 12, 01, 11, 0, 0)
+                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(1).AddHours(8),
+                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(1).AddHours(9)
                      )
                 );
             appointments.Add
@@ -156,8 +156,8 @@ namespace AppointmentScheduluer
                         "Contact Information",
                         "Follow-Up Appointment",
                         "someaddress.domain.com",
-                        new DateTime(2020, 12, 01, 11, 0, 0),
-                        new DateTime(2020, 12, 01, 12, 0, 0)
+                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(1).AddHours(9),
+                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(1).AddHours(10)
                      )
                 );
 
@@ -165,6 +165,37 @@ namespace AppointmentScheduluer
             {
                 InsertAppointment(customerId, title, description, location, contact, type, url, start, end);
             }
+        }
+        public static List<(DateTime start, DateTime end)> GetAppointments(DateTime date)
+        {
+            var list = new List<(DateTime start, DateTime end)>();
+            var query = "SELECT * FROM appointment"; // WHERE start >= '" + date.ToString("yyyy-MM-dd") + "'"
+                // + "AND end <= '" + date.AddDays(1).ToString("yyyy-MM-dd") + "';";
+            // MessageBox.Show("query is " + query);
+            // var result = SQL(query);
+            // list.Add(result.start, result.end);
+            try
+            {
+                var connection = Data.Connect();
+                connection.Open();
+
+                MySqlCommand command = new MySqlCommand(query, connection);
+                MySqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    // MessageBox.Show("reader[9].ToString() is " + reader[9].ToString());
+                    // MessageBox.Show("reader[10].ToString() is " + reader[10].ToString());
+                    list.Add((DateTime.Parse(reader[9].ToString()), DateTime.Parse(reader[10].ToString())));
+                }
+                reader.Close();
+                connection.Close();
+                return list;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            return list;
         }
         public static List<string> Select(string table, int attribute = 0, string where = null)
         {
@@ -241,7 +272,7 @@ namespace AppointmentScheduluer
                 var database = Data.Connect();
                 database.Open();
 
-                int userId = 0;
+                int userId = 1;
                 var command = database.CreateCommand();
                 command.CommandText = "INSERT INTO appointment(customerId, userId, title, description, location, contact, type, url, start, end, createdate, createdBy, lastupdateby)"
                     + " VALUES(?customerId, ?userId, ?title, ?description, ?location, ?contact, ?type, ?url, ?start, ?end, ?createdate, ?createdBy, ?lastupdateby)";
@@ -267,8 +298,8 @@ namespace AppointmentScheduluer
                     location, contact,
                     type, url,
                     start.ToString("yyyy-MM-dd hh:mm:ss"), end.ToString("yyyy-MM-dd hh:mm:ss")).Replace("@", System.Environment.NewLine));
-                command.ExecuteNonQuery();
                 */
+                command.ExecuteNonQuery();
 
 
                 // close database

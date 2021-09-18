@@ -78,7 +78,7 @@ namespace AppointmentScheduluer
                 statusLabel.Text = AppointmentScheduluer.Language.Label.LoginView.Status_Success[AppState.LanguageSetting];
                 statusLabel.ForeColor = Color.Black;
 
-                WeeklyView weeklyView = new WeeklyView();
+                weeklyView weeklyView = new weeklyView();
                 weeklyView.Visible = true;
                 weeklyView.Activate();
 

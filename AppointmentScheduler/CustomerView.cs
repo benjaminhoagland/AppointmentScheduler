@@ -14,8 +14,6 @@ namespace AppointmentScheduluer
 {
     public partial class CustomerView : Form
     {
-        // flag:todo make "selectedCustomer" a static member of this class, and store the various retrieved info there 
-        // including the record IDs for quick retrieval
         public CustomerView()
         {
             InitializeComponent();
@@ -59,6 +57,7 @@ namespace AppointmentScheduluer
         {
 
             searchButton_Click(sender, e);
+            Localize(AppState.LanguageSetting);
         }
         private void CustomerView_Load(object sender, EventArgs e)
         {
@@ -158,8 +157,6 @@ namespace AppointmentScheduluer
             }
 
             var index = customerListBox.SelectedIndex;
-            // flag:debug_only MessageBox.Show("index is " + index);
-            // flag:debug_only MessageBox.Show("matchingCustomers.Count is " + matchingCustomers.Count);
             var selectedCustomer = (
                     id: 0, 
                     name: "default"

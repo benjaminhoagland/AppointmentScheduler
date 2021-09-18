@@ -43,7 +43,17 @@ namespace AppointmentScheduluer
                     "Appointment time in:",
                     "Hora de la cita en:"
                 };
+                public static List<string> refreshButton = new List<string>() { "Refresh", "Refresca" };
                 public static List<string> customerButton = new List<string>() { "Customers", "Clientes" };
+                public static List<string> prevButton = new List<string>() { "<  Previous", "<  Previa" };
+                public static List<string> nextButton = new List<string>() { "Next  >", "Siguiente  >" };
+
+                public static List<string> mondayLabel = new List<string>() { "Monday", "Lunes" };
+                public static List<string> tuesdayLabel = new List<string>() { "Tuesday", "Martes" };
+                public static List<string> wednesdayLabel = new List<string>() { "Wednesday", "Miércoles" };
+                public static List<string> thursdayLabel = new List<string>() { "Thursday", "Jueves" };
+                public static List<string> fridayLabel = new List<string>() { "Friday", "Viernes" };
+
             }
             public class CustomerView
             {
