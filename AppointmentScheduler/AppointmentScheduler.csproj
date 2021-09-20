@@ -89,7 +89,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppointmentScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AppointmentScreen.Designer.cs">
+      <DependentUpon>AppointmentScreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="AppState.cs" />
+    <Compile Include="Component\Appointment.cs" />
     <Compile Include="Component\Customer.cs" />
     <Compile Include="Component\Languages.cs" />
     <Compile Include="Component\Locations.cs" />
@@ -111,12 +118,18 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Component\Timezones.cs" />
+    <Compile Include="TimeAddressableButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="WeeklyView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="WeeklyView.Designer.cs">
       <DependentUpon>WeeklyView.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AppointmentScreen.resx">
+      <DependentUpon>AppointmentScreen.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomerView.resx">
       <DependentUpon>CustomerView.cs</DependentUpon>
       <SubType>Designer</SubType>

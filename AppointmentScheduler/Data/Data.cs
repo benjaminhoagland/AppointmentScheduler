@@ -110,7 +110,7 @@ namespace AppointmentScheduluer
                         4,
                         "Appointment 1",
                         "This is the first appointment",
-                        "New York, New York",
+                        "New York, NY",
                         "Contact Information",
                         "Initial Appointment",
                         "someaddress.domain.com",
@@ -124,7 +124,7 @@ namespace AppointmentScheduluer
                         1,
                         "Appointment 2",
                         "This is the second appointment",
-                        "London",
+                        "London, UK",
                         "Contact Information",
                         "Initial Appointment",
                         "someaddress.domain.com",
@@ -138,7 +138,7 @@ namespace AppointmentScheduluer
                         2,
                         "Appointment 3",
                         "This is the third appointment",
-                        "London",
+                        "London, UK",
                         "Contact Information",
                         "Follow-Up Appointment",
                         "someaddress.domain.com",
@@ -152,7 +152,7 @@ namespace AppointmentScheduluer
                         3,
                         "Appointment 4",
                         "This is the fourth appointment",
-                        "New York, New York",
+                        "New York, NY",
                         "Contact Information",
                         "Follow-Up Appointment",
                         "someaddress.domain.com",
@@ -166,9 +166,9 @@ namespace AppointmentScheduluer
                 InsertAppointment(customerId, title, description, location, contact, type, url, start, end);
             }
         }
-        public static List<(DateTime start, DateTime end)> GetAppointments(DateTime date)
+        public static List<(DateTime start, DateTime end, string location)> GetAppointments(DateTime date)
         {
-            var list = new List<(DateTime start, DateTime end)>();
+            var list = new List<(DateTime start, DateTime end, string location)>();
             var query = "SELECT * FROM appointment"; // WHERE start >= '" + date.ToString("yyyy-MM-dd") + "'"
                 // + "AND end <= '" + date.AddDays(1).ToString("yyyy-MM-dd") + "';";
             // MessageBox.Show("query is " + query);
@@ -185,7 +185,7 @@ namespace AppointmentScheduluer
                 {
                     // MessageBox.Show("reader[9].ToString() is " + reader[9].ToString());
                     // MessageBox.Show("reader[10].ToString() is " + reader[10].ToString());
-                    list.Add((DateTime.Parse(reader[9].ToString()), DateTime.Parse(reader[10].ToString())));
+                    list.Add((DateTime.Parse(reader[9].ToString()), DateTime.Parse(reader[10].ToString()), reader[5].ToString()));
                 }
                 reader.Close();
                 connection.Close();

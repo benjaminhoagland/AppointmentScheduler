@@ -79,10 +79,20 @@ namespace AppointmentScheduluer
                 public static List<string> backButton = new List<string>() { "Back", "Retroceso" };
                 public static List<string> addButton = new List<string>() { "Add New", "Nuevo" };
                 public static List<string> deleteButton = new List<string>() { "Delete", "Borra" };
-
-
-
-
+            }
+            public class AppointmentScreen
+            {
+                public static List<string> pageLabel = new List<string>() { "Appointment Screen", "Vista de Cita" };
+                public static List<string> customerPanelLabel = new List<string>() { "Customer Information", "Información al Cliente" };
+                public static List<string> deleteButton = new List<string>() { "Delete", "Borra" };
+                public static List<string> appointmentPanelLabel = new List<string>() { "Appointment Information", "Información de la Cita" };
+                public static List<string> dateLabel = new List<string>() { "Date", "Fecha" };
+                public static List<string> startLabel = new List<string>() { "Start", "Comienzo" };
+                public static List<string> endLabel = new List<string>() { "End", "Fin" };
+                public static List<string> locationLabel = new List<string>() { "Location", "Localización" };
+                public static List<string> typeLabel = new List<string>() { "Type", "Tipo" };
+                public static List<string> descriptionLabel = new List<string>() { "Description", "Descripción" };
+                public static List<string> changeButton = new List<string>() { "Change", "Cambio" };
             }
         }
     }

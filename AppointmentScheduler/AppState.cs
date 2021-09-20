@@ -19,6 +19,7 @@ namespace AppointmentScheduluer
         public static DateTime SelectedWeek = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
 
         private static int languageSetting = 0;
+        public static weeklyView weeklyView;
         public static int LanguageSetting
         {
             get => languageSetting;
