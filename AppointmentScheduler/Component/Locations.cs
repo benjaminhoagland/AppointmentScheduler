@@ -10,5 +10,6 @@ namespace AppointmentScheduluer
     public class Location
     {
         public static List<string> Locations = new List<string>() { "London, UK", "New York, NY", "Phoenix, AZ" };
+        public static List<int> Timezone = new List<int>() { 47, 21, 12 };
     }
 }

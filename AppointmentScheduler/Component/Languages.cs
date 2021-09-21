@@ -37,7 +37,8 @@ namespace AppointmentScheduluer
                     "Displaying times for location:",
                     "Visualización de tiempos para la ubicación:"
                 };
-                public static List<string> pageLabel = new List<string>() { "Weekly View", "Vista Semanal" };
+                public static List<string> weeklyViewLabel = new List<string>() { "Weekly View", "Vista Semanal" };
+                public static List<string> monthlyViewLabel = new List<string>() { "Monthly View", "Vista Semanal" };
                 public static List<string> timezoneLabel = new List<string>()
                 {
                     "Appointment time in:",
@@ -53,7 +54,9 @@ namespace AppointmentScheduluer
                 public static List<string> wednesdayLabel = new List<string>() { "Wednesday", "Miércoles" };
                 public static List<string> thursdayLabel = new List<string>() { "Thursday", "Jueves" };
                 public static List<string> fridayLabel = new List<string>() { "Friday", "Viernes" };
-
+                
+                public static List<string> changeToMonthly = new List<string>() { "Change view to monthly", "Cambiar la vista a mensual" };
+                public static List<string> changeToWeekly = new List<string>() { "Change view to weekly", "Cambiar la vista a semanal" };
             }
             public class CustomerView
             {

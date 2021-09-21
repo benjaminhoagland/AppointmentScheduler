@@ -63,6 +63,7 @@ namespace AppointmentScheduluer
             this.tuesdayPanel = new System.Windows.Forms.TableLayoutPanel();
             this.mondayDate = new System.Windows.Forms.Label();
             this.appointmentCount = new System.Windows.Forms.Label();
+            this.changeViewButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -521,11 +522,24 @@ namespace AppointmentScheduluer
             this.appointmentCount.Text = "appointmentCount";
             this.appointmentCount.Visible = false;
             // 
+            // changeViewButton
+            // 
+            this.changeViewButton.AutoSize = true;
+            this.changeViewButton.BackColor = System.Drawing.Color.DarkSalmon;
+            this.changeViewButton.Location = new System.Drawing.Point(448, 78);
+            this.changeViewButton.Name = "changeViewButton";
+            this.changeViewButton.Size = new System.Drawing.Size(132, 23);
+            this.changeViewButton.TabIndex = 32;
+            this.changeViewButton.Text = "Change to Monthly View";
+            this.changeViewButton.UseVisualStyleBackColor = false;
+            this.changeViewButton.Click += new System.EventHandler(this.changeViewButton_Click);
+            // 
             // weeklyView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1047, 611);
+            this.Controls.Add(this.changeViewButton);
             this.Controls.Add(this.appointmentCount);
             this.Controls.Add(this.weekPanel);
             this.Controls.Add(this.refreshButton);
@@ -592,5 +606,6 @@ namespace AppointmentScheduluer
         private System.Windows.Forms.Label tuesdayDate;
         private System.Windows.Forms.Label mondayDate;
         private System.Windows.Forms.Label appointmentCount;
+        private System.Windows.Forms.Button changeViewButton;
     }
 }

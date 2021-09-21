@@ -20,6 +20,7 @@ namespace AppointmentScheduluer
 
         private static int languageSetting = 0;
         public static weeklyView weeklyView;
+        public static bool weeklySetting = true;
         public static int LanguageSetting
         {
             get => languageSetting;
@@ -43,15 +44,16 @@ namespace AppointmentScheduluer
                 }
             }
         }
-        private static int timezoneSetting = 47;
+        private static int _TimezoneSetting = 47;
         public static int TimezoneSetting
         {
-            get => timezoneSetting;
+            get => _TimezoneSetting;
             set
             {
-                if (value >= 0 && value < Location.Locations.Count)
+                if (value >= 0 && value < Timezones.List.Count)
                 {
-                    timezoneSetting = value;
+                    _TimezoneSetting = value;
+                    
                 }
             }
         }

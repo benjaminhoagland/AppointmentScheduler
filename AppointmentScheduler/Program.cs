@@ -21,6 +21,7 @@ namespace AppointmentScheduluer
             main.Show();
             // Data.Clear();
             // Data.Populate();
+            AppState.SelectedWeek = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
             Application.Run();
         }
 

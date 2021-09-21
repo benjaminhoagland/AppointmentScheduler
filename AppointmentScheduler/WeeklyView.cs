@@ -32,6 +32,14 @@ namespace AppointmentScheduluer
         {
             // load into customer view when app loads
             // button1_Click(sender, e);
+            PopulateLabels();
+
+            AppState.weeklyView = this;
+            refreshButton_Click(sender, e);
+            loaded = true;
+        }
+        private void PopulateLabels()
+        {
             DisplayedDateLabels.Add(mondayDate);
             DisplayedDateLabels.Add(tuesdayDate);
             DisplayedDateLabels.Add(wednesdayDate);
@@ -43,12 +51,7 @@ namespace AppointmentScheduluer
             DayPanels.Add(wednesdayPanel);
             DayPanels.Add(thursdayPanel);
             DayPanels.Add(fridayPanel);
-
-            AppState.weeklyView = this;
-            refreshButton_Click(sender, e);
-            loaded = true;
         }
-
         private void languageBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             var language = languageBox.SelectedIndex;
@@ -66,7 +69,6 @@ namespace AppointmentScheduluer
             languageBox.SelectedIndex = Language;
             appNameLabel.Text = AppointmentScheduluer.Language.Label.WeeklyView.appNameLabel[Language];
             locationLabel.Text = AppointmentScheduluer.Language.Label.WeeklyView.locationLabel[Language];
-            pageLabel.Text = AppointmentScheduluer.Language.Label.WeeklyView.pageLabel[Language];
             timezoneLabel.Text = AppointmentScheduluer.Language.Label.WeeklyView.timezoneLabel[Language];
             customerButton.Text = AppointmentScheduluer.Language.Label.WeeklyView.customerButton[Language];
             prevButton.Text = AppointmentScheduluer.Language.Label.WeeklyView.prevButton[Language];
@@ -78,7 +80,13 @@ namespace AppointmentScheduluer
             wednesdayLabel.Text = AppointmentScheduluer.Language.Label.WeeklyView.wednesdayLabel[Language];
             thursdayLabel.Text = AppointmentScheduluer.Language.Label.WeeklyView.thursdayLabel[Language];
             fridayLabel.Text = AppointmentScheduluer.Language.Label.WeeklyView.fridayLabel[Language];
-            
+
+            changeViewButton.Text = AppState.weeklySetting == true
+                ? AppointmentScheduluer.Language.Label.WeeklyView.changeToMonthly[AppState.LanguageSetting]
+                : AppointmentScheduluer.Language.Label.WeeklyView.changeToWeekly[AppState.LanguageSetting];
+            pageLabel.Text = AppState.weeklySetting == true
+                ? AppointmentScheduluer.Language.Label.WeeklyView.weeklyViewLabel[AppState.LanguageSetting]
+                : AppointmentScheduluer.Language.Label.WeeklyView.monthlyViewLabel[AppState.LanguageSetting];
         }
         public void Locate(int Location)
         {
@@ -93,6 +101,8 @@ namespace AppointmentScheduluer
 
         private void timezoneBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            AppState.TimezoneSetting = timezoneBox.SelectedIndex;
+            refreshButton_Click(sender, e);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -133,6 +143,7 @@ namespace AppointmentScheduluer
         private List<TimeAddressableButton> buttonList = new List<TimeAddressableButton>();
         public void refreshButton_Click(object sender, EventArgs e)
         {
+   
             Drawing.Suspend(this);
             /* 
             Data.InsertAppointment(3,
@@ -145,72 +156,49 @@ namespace AppointmentScheduluer
                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(1).AddHours(9),
                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(1).AddHours(10));
             */
-            buttonList.Clear();
-            foreach (int day in Enumerable.Range(0,5))
+            if (AppState.weeklySetting == true)
             {
-                // flag:todo programattically add functionality to generated buttons
-                // flag:todo add customer selection feature for appointments
-
-                DayPanels[day].Controls.Clear();
-                DisplayedDateLabels[day].Text = AppState.SelectedWeek.AddDays(day).ToString("yyyy-MM-dd");
-                var appointments = Data.GetAppointments(AppState.SelectedWeek.AddDays(day));
-
-                appointmentCount.Text = appointments.Count().ToString();
-
-                foreach (var hour in Enumerable.Range(0,8))
+                buttonList.Clear();
+                PopulateLabels();
+                foreach (int day in Enumerable.Range(0, 5))
                 {
-                    var timeslot = AppState.SelectedWeek.AddDays(day).AddHours(AppState.BusinessStart.AddHours(hour).Hour);
-                    var button = new TimeAddressableButton();
-                    buttonList.Add(button);
-                    button.TextAlign = ContentAlignment.MiddleCenter;
-                    button.Dock = DockStyle.Fill;
-                    button.Text = AppState.SelectedWeek.AddDays(day).AddHours(timeslot.Hour).ToString("h:mm");
-                    
-                    button.Name = "button" + timeslot.ToString("yyyymmddhh");
-                    button.TimeAddress = timeslot;
-                    button.Click += (s, ev) => // "lambda instance 2"
+                    DayPanels[day].Controls.Clear();
+                    DisplayedDateLabels[day].Text = AppState.SelectedWeek.AddDays(day).ToString("yyyy-MM-dd");
+                    var appointments = Data.GetAppointments(AppState.SelectedWeek.AddDays(day));
+
+                    appointmentCount.Text = appointments.Count().ToString();
+
+                    foreach (var hour in Enumerable.Range(0, 8))
                     {
-                        // initialize button
-                        int id = 0;
-                        
-                        // try to find a matching appointment at that time
-                        Int32.TryParse(Data.Select("appointment", 0, "start = \'" + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss") + "\';").FirstOrDefault(), out id);
-                        // MessageBox.Show("found id is " + id);
-                        if (id == 0)
+                        var timeslot = AppState.SelectedWeek.AddDays(day).AddHours(AppState.BusinessStart.AddHours(hour).Hour);
+                        var button = new TimeAddressableButton();
+                        buttonList.Add(button);
+                        button.TextAlign = ContentAlignment.MiddleCenter;
+                        button.Dock = DockStyle.Fill;
+                        button.Text = AppState.SelectedWeek.AddDays(day).AddHours(timeslot.Hour)
+                            .AddHours(Timezones.List[AppState.TimezoneSetting].BaseUtcOffset.Hours)
+                            .AddHours(-Timezones.List[AppointmentScheduluer.Location.Timezone[AppState.LocationSetting]].BaseUtcOffset.Hours)
+                            .ToString("HH:mm");
+
+                        button.Name = "button" + timeslot.ToString("yyyymmddhh");
+                        button.TimeAddress = timeslot;
+                        button.Click += (s, ev) => // "lambda instance 2"
                         {
-                            // create an appointment
-                            Data.InsertAppointment(1, "New appointment" + button.TimeAddress.ToString("yyyy-MM-dd"), "", AppointmentScheduluer.Location.Locations[AppState.LocationSetting], "", "New", "", button.TimeAddress, button.TimeAddress.AddHours(1));
-                            // get the most recently created appointment's id
-                            Int32.TryParse(Data.Select("appointment", 0, "start = \'" + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss") + "\';").LastOrDefault(), out id);
-                            // MessageBox.Show("button.TimeAddress.ToString(\"yyyy - MM - dd hh: mm:ss\") is " + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss"));
+                            // initialize button
+                            int id = 0;
 
-
-                            // use the new appointment id as the selected id
-                            Appointment.Selected.AppointmentId = id;
-                        }
-                        else
-                        {
-                            // use the found appointment id to set the selected id
-                            Appointment.Selected.AppointmentId = id;
-                        }
-
-                        // id was not found to be 0, and there was an appointment detected in that slot
-                        // check if the found matching appoiintment is at the correct location
-                        if (Data.Select("appointment", 5, "appointmentId = \'" + id + "\';").FirstOrDefault() == AppointmentScheduluer.Location.Locations[AppState.LocationSetting])
-                        {
-
-                            // MessageBox.Show(Data.Select("appointment", 5, "start = \'" + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss") + "\';").FirstOrDefault());
-
-                            // check if there is no appointment at that time
+                            // try to find a matching appointment at that time
+                            Int32.TryParse(Data.Select("appointment", 0, "start = \'" + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss") + "\';").FirstOrDefault(), out id);
+                            // MessageBox.Show("found id is " + id);
                             if (id == 0)
                             {
                                 // create an appointment
                                 Data.InsertAppointment(1, "New appointment" + button.TimeAddress.ToString("yyyy-MM-dd"), "", AppointmentScheduluer.Location.Locations[AppState.LocationSetting], "", "New", "", button.TimeAddress, button.TimeAddress.AddHours(1));
                                 // get the most recently created appointment's id
                                 Int32.TryParse(Data.Select("appointment", 0, "start = \'" + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss") + "\';").LastOrDefault(), out id);
-                                MessageBox.Show("button.TimeAddress.ToString(\"yyyy - MM - dd hh: mm:ss\") is " + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss"));
-                                
-                                
+                                // MessageBox.Show("button.TimeAddress.ToString(\"yyyy - MM - dd hh: mm:ss\") is " + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss"));
+
+
                                 // use the new appointment id as the selected id
                                 Appointment.Selected.AppointmentId = id;
                             }
@@ -219,27 +207,111 @@ namespace AppointmentScheduluer
                                 // use the found appointment id to set the selected id
                                 Appointment.Selected.AppointmentId = id;
                             }
+
+                            // id was not found to be 0, and there was an appointment detected in that slot
+                            // check if the found matching appoiintment is at the correct location
+                            if (Data.Select("appointment", 5, "appointmentId = \'" + id + "\';").FirstOrDefault() == AppointmentScheduluer.Location.Locations[AppState.LocationSetting])
+                            {
+
+                                // MessageBox.Show(Data.Select("appointment", 5, "start = \'" + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss") + "\';").FirstOrDefault());
+
+                                // check if there is no appointment at that time
+                                if (id == 0)
+                                {
+                                    // create an appointment
+                                    Data.InsertAppointment(1, "New appointment" + button.TimeAddress.ToString("yyyy-MM-dd"), "", AppointmentScheduluer.Location.Locations[AppState.LocationSetting], "", "New", "", button.TimeAddress, button.TimeAddress.AddHours(1));
+                                    // get the most recently created appointment's id
+                                    Int32.TryParse(Data.Select("appointment", 0, "start = \'" + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss") + "\';").LastOrDefault(), out id);
+                                    MessageBox.Show("button.TimeAddress.ToString(\"yyyy - MM - dd hh: mm:ss\") is " + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss"));
+
+
+                                    // use the new appointment id as the selected id
+                                    Appointment.Selected.AppointmentId = id;
+                                }
+                                else
+                                {
+                                    // use the found appointment id to set the selected id
+                                    Appointment.Selected.AppointmentId = id;
+                                }
+                            }
+                            // show the dialog
+                            appointmentScreen.ShowDialog(this);
+
+
+                        };
+                        DayPanels[day].Controls.Add(button, 0, hour);
+                        if (appointments.Any(t => t.start == timeslot && t.location == AppointmentScheduluer.Location.Locations[AppState.LocationSetting])) // "lambda instance 1"
+                        {
+                            button.BackColor = Color.Orange;
+                            button.Text += System.Environment.NewLine;
+                            button.Text += "Edit Appointment";
                         }
-                        // show the dialog
-                        appointmentScreen.ShowDialog(this);
-                        
-                        
-                    };
-                    DayPanels[day].Controls.Add(button, 0, hour);
-                    if (appointments.Any(t => t.start == timeslot && t.location == AppointmentScheduluer.Location.Locations[AppState.LocationSetting])) // "lambda instance 1"
-                    {
-                        button.BackColor = Color.Orange;
-                        button.Text += System.Environment.NewLine;
-                        button.Text += "Edit Appointment";
-                    }
-                    else
-                    {
-                        button.BackColor = Color.LightBlue;
-                        button.Text += System.Environment.NewLine;
-                        button.Text += "Create Appointment";
+                        else
+                        {
+                            button.BackColor = Color.LightBlue;
+                            button.Text += System.Environment.NewLine;
+                            button.Text += "Create Appointment";
+                        }
                     }
                 }
             }
+            else
+            {
+                foreach (var panel in DayPanels)
+                {
+                    panel.Controls.Clear();
+                }
+                buttonList.Clear();
+                PopulateLabels();
+                foreach (int week in Enumerable.Range(0, 5))
+                {
+                    // MessageBox.Show("week is " + week);
+                    var offset = week * 7;
+                    foreach (int day in Enumerable.Range(0, 5))
+                    {
+                        // MessageBox.Show("day is " + day);
+                        
+                        if(week == 0) DisplayedDateLabels[day].Text = "";
+
+                        var appointments = Data.GetAppointments(AppState.SelectedWeek.AddDays(day + offset));
+                        appointmentCount.Text = appointments.Count().ToString();
+
+                        var button = new TimeAddressableButton();
+                        buttonList.Add(button);
+                        button.TextAlign = ContentAlignment.MiddleCenter;
+                        button.Dock = DockStyle.Fill;
+                        button.Text = AppState.SelectedWeek.AddDays(day + offset).ToString("yyyy-MM-dd");
+
+                        button.Name = "button" + AppState.SelectedWeek.AddDays(day + offset).ToString("yyyymmdd");
+                        button.TimeAddress = AppState.SelectedWeek.AddDays(day + offset);
+                        button.Click += (s, ev) => 
+                        { 
+                            AppState.weeklySetting = true; 
+                            AppState.SelectedWeek = button.TimeAddress.StartOfWeek(DayOfWeek.Monday);
+                            refreshButton_Click(sender, e);
+                        }; // "lambda instance 3"
+
+                        DayPanels[day].Controls.Add(button, 0, week);
+                        if (appointments.Any(
+                            t => t.start >= AppState.SelectedWeek.AddDays(day + offset).AddHours(AppState.BusinessStart.Hour) 
+                            && t.end <= AppState.SelectedWeek.AddDays(day + offset).AddHours(AppState.BusinessStart.Hour + 8)
+                            && t.location == AppointmentScheduluer.Location.Locations[AppState.LocationSetting])) // "lambda instance 1"
+                        {
+                            button.BackColor = Color.Orange;
+                            button.Text += System.Environment.NewLine;
+                            button.Text += "View Appointments";
+                        }
+                        else
+                        {
+                            button.BackColor = Color.LightBlue;
+                            button.Text += System.Environment.NewLine;
+                            button.Text += "Create Appointment";
+                        }
+                        
+                    }
+                }
+            }
+            // timezoneBox.SelectedIndex = AppState.TimezoneSetting;
             Drawing.Resume(this);
             this.Refresh();
         }
@@ -266,13 +338,15 @@ namespace AppointmentScheduluer
 
         private void nextButton_Click(object sender, EventArgs e)
         {
-            AppState.SelectedWeek = AppState.SelectedWeek.AddDays(7);
+            var days = AppState.weeklySetting == true ? 7 : 7 * 4;
+            AppState.SelectedWeek = AppState.SelectedWeek.AddDays(days);
             refreshButton_Click(sender,e);
         }
 
         private void prevButton_Click(object sender, EventArgs e)
         {
-            AppState.SelectedWeek = AppState.SelectedWeek.AddDays(-7);
+            var days = AppState.weeklySetting == true ? 7 : 7 * 4;
+            AppState.SelectedWeek = AppState.SelectedWeek.AddDays(-days);
             refreshButton_Click(sender, e);
         }
         private void label1_Click(object sender, EventArgs e)
@@ -288,7 +362,20 @@ namespace AppointmentScheduluer
         private void locationBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             AppState.LocationSetting = locationBox.SelectedIndex;
+            
             if(loaded) refreshButton_Click(sender, e);
+        }
+
+        private void changeViewButton_Click(object sender, EventArgs e)
+        {
+            AppState.weeklySetting = !AppState.weeklySetting;
+            changeViewButton.Text = AppState.weeklySetting == true
+                ? AppointmentScheduluer.Language.Label.WeeklyView.changeToMonthly[AppState.LanguageSetting]
+                : AppointmentScheduluer.Language.Label.WeeklyView.changeToWeekly[AppState.LanguageSetting];
+            pageLabel.Text = AppState.weeklySetting == true
+                ? AppointmentScheduluer.Language.Label.WeeklyView.weeklyViewLabel[AppState.LanguageSetting]
+                : AppointmentScheduluer.Language.Label.WeeklyView.monthlyViewLabel[AppState.LanguageSetting];
+            refreshButton_Click(sender, e);
         }
     }
 }
