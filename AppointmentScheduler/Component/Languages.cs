@@ -12,7 +12,12 @@ namespace AppointmentScheduluer
     {
         public static List<string> Languages = new List<string>() { "English","Español" };
         public class Label
-        {
+        { 
+            public class ReportView
+            {
+            public static List<string> appNameLabel = new List<string>() { "Appointment Scheduler", "Programador de Citas" };
+            public static List<string> pageLabel = new List<string>() { "Report View", "Vista Informes" };
+            }
             public class LoginView
             {
                 public static List<string> Username = new List<string>() { "Username", "Usuario" };
@@ -57,6 +62,11 @@ namespace AppointmentScheduluer
                 
                 public static List<string> changeToMonthly = new List<string>() { "Change view to monthly", "Cambiar la vista a mensual" };
                 public static List<string> changeToWeekly = new List<string>() { "Change view to weekly", "Cambiar la vista a semanal" };
+
+                public static List<string> reportLabel = new List<string>() { "Generate Reports", "Generar Informes" };
+                public static List<string> report1button = new List<string>() { "Appointment Types by Month", "Tipos de Citas por Mes" };
+                public static List<string> report2button = new List<string>() { "Consultant Schedules", "Horarios del Consultor" };
+                public static List<string> report3button = new List<string>() { "Appointments by Location", "Citas por Localización" };
             }
             public class CustomerView
             {

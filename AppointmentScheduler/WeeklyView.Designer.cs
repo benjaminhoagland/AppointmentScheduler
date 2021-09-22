@@ -64,10 +64,16 @@ namespace AppointmentScheduluer
             this.mondayDate = new System.Windows.Forms.Label();
             this.appointmentCount = new System.Windows.Forms.Label();
             this.changeViewButton = new System.Windows.Forms.Button();
+            this.reportLabel = new System.Windows.Forms.Label();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.report1button = new System.Windows.Forms.Button();
+            this.report2button = new System.Windows.Forms.Button();
+            this.report3button = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.weekPanel.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // languageBox
@@ -127,7 +133,7 @@ namespace AppointmentScheduluer
             // pageLabel
             // 
             this.pageLabel.AutoSize = true;
-            this.pageLabel.Location = new System.Drawing.Point(483, 54);
+            this.pageLabel.Location = new System.Drawing.Point(423, 61);
             this.pageLabel.Name = "pageLabel";
             this.pageLabel.Size = new System.Drawing.Size(69, 13);
             this.pageLabel.TabIndex = 13;
@@ -244,7 +250,7 @@ namespace AppointmentScheduluer
             // 
             // nextButton
             // 
-            this.nextButton.Location = new System.Drawing.Point(558, 49);
+            this.nextButton.Location = new System.Drawing.Point(498, 56);
             this.nextButton.Name = "nextButton";
             this.nextButton.Size = new System.Drawing.Size(75, 23);
             this.nextButton.TabIndex = 21;
@@ -254,7 +260,7 @@ namespace AppointmentScheduluer
             // 
             // prevButton
             // 
-            this.prevButton.Location = new System.Drawing.Point(402, 49);
+            this.prevButton.Location = new System.Drawing.Point(342, 56);
             this.prevButton.Name = "prevButton";
             this.prevButton.Size = new System.Drawing.Size(75, 23);
             this.prevButton.TabIndex = 22;
@@ -329,7 +335,7 @@ namespace AppointmentScheduluer
             // 
             // refreshButton
             // 
-            this.refreshButton.Location = new System.Drawing.Point(469, 518);
+            this.refreshButton.Location = new System.Drawing.Point(409, 525);
             this.refreshButton.Name = "refreshButton";
             this.refreshButton.Size = new System.Drawing.Size(83, 23);
             this.refreshButton.TabIndex = 29;
@@ -360,7 +366,7 @@ namespace AppointmentScheduluer
             this.weekPanel.Controls.Add(this.tuesdayLabel, 1, 0);
             this.weekPanel.Controls.Add(this.wednesdayLabel, 2, 0);
             this.weekPanel.Controls.Add(this.mondayDate, 0, 1);
-            this.weekPanel.Location = new System.Drawing.Point(81, 120);
+            this.weekPanel.Location = new System.Drawing.Point(21, 127);
             this.weekPanel.Name = "weekPanel";
             this.weekPanel.RowCount = 3;
             this.weekPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
@@ -515,7 +521,7 @@ namespace AppointmentScheduluer
             // appointmentCount
             // 
             this.appointmentCount.AutoSize = true;
-            this.appointmentCount.Location = new System.Drawing.Point(192, 77);
+            this.appointmentCount.Location = new System.Drawing.Point(132, 84);
             this.appointmentCount.Name = "appointmentCount";
             this.appointmentCount.Size = new System.Drawing.Size(93, 13);
             this.appointmentCount.TabIndex = 31;
@@ -526,7 +532,7 @@ namespace AppointmentScheduluer
             // 
             this.changeViewButton.AutoSize = true;
             this.changeViewButton.BackColor = System.Drawing.Color.DarkSalmon;
-            this.changeViewButton.Location = new System.Drawing.Point(448, 78);
+            this.changeViewButton.Location = new System.Drawing.Point(388, 85);
             this.changeViewButton.Name = "changeViewButton";
             this.changeViewButton.Size = new System.Drawing.Size(132, 23);
             this.changeViewButton.TabIndex = 32;
@@ -534,11 +540,74 @@ namespace AppointmentScheduluer
             this.changeViewButton.UseVisualStyleBackColor = false;
             this.changeViewButton.Click += new System.EventHandler(this.changeViewButton_Click);
             // 
+            // reportLabel
+            // 
+            this.reportLabel.AutoSize = true;
+            this.reportLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.reportLabel.Location = new System.Drawing.Point(3, 0);
+            this.reportLabel.Name = "reportLabel";
+            this.reportLabel.Size = new System.Drawing.Size(133, 54);
+            this.reportLabel.TabIndex = 33;
+            this.reportLabel.Text = "Generate Reports";
+            this.reportLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.report3button, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.reportLabel, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.report2button, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.report1button, 0, 1);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(896, 127);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 4;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(139, 218);
+            this.tableLayoutPanel1.TabIndex = 37;
+            // 
+            // report1button
+            // 
+            this.report1button.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.report1button.Location = new System.Drawing.Point(3, 57);
+            this.report1button.Name = "report1button";
+            this.report1button.Size = new System.Drawing.Size(133, 48);
+            this.report1button.TabIndex = 35;
+            this.report1button.Text = "Appointment Types By Month";
+            this.report1button.UseVisualStyleBackColor = true;
+            this.report1button.Click += new System.EventHandler(this.report1button_Click);
+            // 
+            // report2button
+            // 
+            this.report2button.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.report2button.Location = new System.Drawing.Point(3, 111);
+            this.report2button.Name = "report2button";
+            this.report2button.Size = new System.Drawing.Size(133, 48);
+            this.report2button.TabIndex = 36;
+            this.report2button.Text = "Consultant Schedules";
+            this.report2button.UseVisualStyleBackColor = true;
+            this.report2button.Click += new System.EventHandler(this.report2button_Click);
+            // 
+            // report3button
+            // 
+            this.report3button.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.report3button.Location = new System.Drawing.Point(3, 165);
+            this.report3button.Name = "report3button";
+            this.report3button.Size = new System.Drawing.Size(133, 50);
+            this.report3button.TabIndex = 38;
+            this.report3button.Text = "Appointments by Location";
+            this.report3button.UseVisualStyleBackColor = true;
+            this.report3button.Click += new System.EventHandler(this.report3button_Click);
+            // 
             // weeklyView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1047, 611);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.changeViewButton);
             this.Controls.Add(this.appointmentCount);
             this.Controls.Add(this.weekPanel);
@@ -565,6 +634,8 @@ namespace AppointmentScheduluer
             this.panel3.PerformLayout();
             this.weekPanel.ResumeLayout(false);
             this.weekPanel.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -607,5 +678,10 @@ namespace AppointmentScheduluer
         private System.Windows.Forms.Label mondayDate;
         private System.Windows.Forms.Label appointmentCount;
         private System.Windows.Forms.Button changeViewButton;
+        private System.Windows.Forms.Label reportLabel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Button report3button;
+        private System.Windows.Forms.Button report2button;
+        private System.Windows.Forms.Button report1button;
     }
 }

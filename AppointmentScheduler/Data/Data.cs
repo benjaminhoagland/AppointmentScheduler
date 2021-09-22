@@ -236,6 +236,30 @@ namespace AppointmentScheduluer
             }
             return contents;
         }
+        public static void UpdateAppointment(int appointmentId, int customerId, string description, string type)
+        {
+            try
+            {
+                var database = Data.Connect();
+                database.Open();
+
+                var command = database.CreateCommand();
+                command.CommandText = "UPDATE appointment SET customerId = ?customerId, description = ?description, type = ?type WHERE appointmentId = ?appointmentId;";
+                command.Parameters.AddWithValue("?customerId", customerId);
+                command.Parameters.AddWithValue("?description", description);
+                command.Parameters.AddWithValue("?type", type);
+                command.Parameters.AddWithValue("?appointmentId", appointmentId);
+                command.ExecuteNonQuery();
+
+
+                // close database
+                database.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
         public static void InsertAppointment(
             int customerId,
             string title,

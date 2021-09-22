@@ -87,6 +87,11 @@ namespace AppointmentScheduluer
             pageLabel.Text = AppState.weeklySetting == true
                 ? AppointmentScheduluer.Language.Label.WeeklyView.weeklyViewLabel[AppState.LanguageSetting]
                 : AppointmentScheduluer.Language.Label.WeeklyView.monthlyViewLabel[AppState.LanguageSetting];
+
+            reportLabel.Text = AppointmentScheduluer.Language.Label.WeeklyView.reportLabel[Language];
+            report1button.Text = AppointmentScheduluer.Language.Label.WeeklyView.report1button[Language];
+            report2button.Text = AppointmentScheduluer.Language.Label.WeeklyView.report2button[Language];
+            report3button.Text = AppointmentScheduluer.Language.Label.WeeklyView.report3button[Language];
         }
         public void Locate(int Location)
         {
@@ -143,7 +148,8 @@ namespace AppointmentScheduluer
         private List<TimeAddressableButton> buttonList = new List<TimeAddressableButton>();
         public void refreshButton_Click(object sender, EventArgs e)
         {
-   
+            int defaultCustomerID = -1;
+            Int32.TryParse(Data.Select("customer", 0).FirstOrDefault(), out defaultCustomerID);
             Drawing.Suspend(this);
             /* 
             Data.InsertAppointment(3,
@@ -179,77 +185,52 @@ namespace AppointmentScheduluer
                             .AddHours(Timezones.List[AppState.TimezoneSetting].BaseUtcOffset.Hours)
                             .AddHours(-Timezones.List[AppointmentScheduluer.Location.Timezone[AppState.LocationSetting]].BaseUtcOffset.Hours)
                             .ToString("HH:mm");
+                        button.Text += System.Environment.NewLine;
 
                         button.Name = "button" + timeslot.ToString("yyyymmddhh");
                         button.TimeAddress = timeslot;
-                        button.Click += (s, ev) => // "lambda instance 2"
+                        // "lambda instance 2"
+                        // this inline function dramatically increases code clarity and reduces overal class complexity
+                        button.Click += (s, ev) => 
                         {
-                            // initialize button
                             int id = 0;
-
-                            // try to find a matching appointment at that time
                             Int32.TryParse(Data.Select("appointment", 0, "start = \'" + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss") + "\';").FirstOrDefault(), out id);
-                            // MessageBox.Show("found id is " + id);
                             if (id == 0)
                             {
-                                // create an appointment
-                                Data.InsertAppointment(1, "New appointment" + button.TimeAddress.ToString("yyyy-MM-dd"), "", AppointmentScheduluer.Location.Locations[AppState.LocationSetting], "", "New", "", button.TimeAddress, button.TimeAddress.AddHours(1));
-                                // get the most recently created appointment's id
+                                Data.InsertAppointment(defaultCustomerID, "New appointment" + button.TimeAddress.ToString("yyyy-MM-dd"), "", AppointmentScheduluer.Location.Locations[AppState.LocationSetting], "", "New", "", button.TimeAddress, button.TimeAddress.AddHours(1));
                                 Int32.TryParse(Data.Select("appointment", 0, "start = \'" + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss") + "\';").LastOrDefault(), out id);
-                                // MessageBox.Show("button.TimeAddress.ToString(\"yyyy - MM - dd hh: mm:ss\") is " + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss"));
-
-
-                                // use the new appointment id as the selected id
                                 Appointment.Selected.AppointmentId = id;
                             }
                             else
                             {
-                                // use the found appointment id to set the selected id
                                 Appointment.Selected.AppointmentId = id;
                             }
-
-                            // id was not found to be 0, and there was an appointment detected in that slot
-                            // check if the found matching appoiintment is at the correct location
                             if (Data.Select("appointment", 5, "appointmentId = \'" + id + "\';").FirstOrDefault() == AppointmentScheduluer.Location.Locations[AppState.LocationSetting])
                             {
-
-                                // MessageBox.Show(Data.Select("appointment", 5, "start = \'" + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss") + "\';").FirstOrDefault());
-
-                                // check if there is no appointment at that time
                                 if (id == 0)
                                 {
-                                    // create an appointment
-                                    Data.InsertAppointment(1, "New appointment" + button.TimeAddress.ToString("yyyy-MM-dd"), "", AppointmentScheduluer.Location.Locations[AppState.LocationSetting], "", "New", "", button.TimeAddress, button.TimeAddress.AddHours(1));
-                                    // get the most recently created appointment's id
+                                    Data.InsertAppointment(defaultCustomerID, "New appointment" + button.TimeAddress.ToString("yyyy-MM-dd"), "", AppointmentScheduluer.Location.Locations[AppState.LocationSetting], "", "New", "", button.TimeAddress, button.TimeAddress.AddHours(1));
                                     Int32.TryParse(Data.Select("appointment", 0, "start = \'" + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss") + "\';").LastOrDefault(), out id);
-                                    MessageBox.Show("button.TimeAddress.ToString(\"yyyy - MM - dd hh: mm:ss\") is " + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss"));
-
-
-                                    // use the new appointment id as the selected id
                                     Appointment.Selected.AppointmentId = id;
                                 }
                                 else
                                 {
-                                    // use the found appointment id to set the selected id
                                     Appointment.Selected.AppointmentId = id;
                                 }
                             }
-                            // show the dialog
                             appointmentScreen.ShowDialog(this);
-
-
                         };
                         DayPanels[day].Controls.Add(button, 0, hour);
-                        if (appointments.Any(t => t.start == timeslot && t.location == AppointmentScheduluer.Location.Locations[AppState.LocationSetting])) // "lambda instance 1"
+                        // "lambda instance 1"
+                        // this lambda search query expression improves code clarity and makes this query function more effectively 
+                        if (appointments.Any(t => t.start == timeslot && t.location == AppointmentScheduluer.Location.Locations[AppState.LocationSetting]))
                         {
                             button.BackColor = Color.Orange;
-                            button.Text += System.Environment.NewLine;
                             button.Text += "Edit Appointment";
                         }
                         else
                         {
                             button.BackColor = Color.LightBlue;
-                            button.Text += System.Environment.NewLine;
                             button.Text += "Create Appointment";
                         }
                     }
@@ -311,24 +292,30 @@ namespace AppointmentScheduluer
                     }
                 }
             }
-            // timezoneBox.SelectedIndex = AppState.TimezoneSetting;
             Drawing.Resume(this);
+            NotifyCloseAppointment();
             this.Refresh();
         }
-        private void NewButton_Click(object sender, EventArgs e) // "lambda instance 2" was refitted from this function
+        private void NotifyCloseAppointment(int minutes = 60)
         {
-            var clicked = (TimeAddressableButton)sender;
-
-            foreach (var button in buttonList)
+            var appointments = Data.GetAppointments(AppState.SelectedWeek);
+            // lambda instance 3 is a quick comparison to supply the notification code with actionability
+            if (appointments.Any(t => t.start - DateTime.Now <= new TimeSpan(0, minutes, 0)))
             {
-                if (clicked.TimeAddress == button.TimeAddress)
+                var selectedIDs = Data.Select("appointment", 0, "start = \'" + DateTime.Now.AddHours(1).ToString("yyyy-MM-dd hh:00:00") + "\';");
+                foreach(var selection in selectedIDs)
                 {
-                    int id;
-                    Int32.TryParse(Data.Select("appointment", 0, "start = \'" + clicked.TimeAddress + "\';").FirstOrDefault(), out id);
-                    Appointment.Selected.AppointmentId = id;
-                    appointmentScreen.ShowDialog(this);
-                    break;
-                }
+                    var appointmentTime = DateTime.Parse(Data.Select("appointment", 9, "appointmentId = \'" + selection + "\';").FirstOrDefault());
+                    var howSoon = appointmentTime - DateTime.Now;
+                    string message = "An appointment is scheduled for " + howSoon.ToString("mm") + " minutes from now.";
+                    message += System.Environment.NewLine;
+                    var customerId = Data.Select("appointment", 1, "appointmentId = \'" + selection + "\';").FirstOrDefault();
+                    message += "Customer: " + Data.Select("customer", 1, "customerId = \'" + customerId + "\';").FirstOrDefault();
+                    const string caption = "Appointment Alert";
+                    var result = MessageBox.Show(message, caption,
+                                                    MessageBoxButtons.OK,
+                                                    MessageBoxIcon.Information);
+                }    
             }
         }
         private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
@@ -376,6 +363,27 @@ namespace AppointmentScheduluer
                 ? AppointmentScheduluer.Language.Label.WeeklyView.weeklyViewLabel[AppState.LanguageSetting]
                 : AppointmentScheduluer.Language.Label.WeeklyView.monthlyViewLabel[AppState.LanguageSetting];
             refreshButton_Click(sender, e);
+        }
+
+        private void report1button_Click(object sender, EventArgs e)
+        {
+            AppState.ReportType = 0; 
+            var reportView = new reportView();
+            reportView.Show();
+        }
+
+        private void report2button_Click(object sender, EventArgs e)
+        {
+            AppState.ReportType = 1; 
+            var reportView = new reportView();
+            reportView.Show();
+        }
+
+        private void report3button_Click(object sender, EventArgs e)
+        {
+            AppState.ReportType = 2;
+            var reportView = new reportView();
+            reportView.Show();
         }
     }
 }
