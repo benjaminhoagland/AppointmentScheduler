@@ -269,7 +269,15 @@ namespace AppointmentScheduluer
                         { 
                             AppState.weeklySetting = true; 
                             AppState.SelectedWeek = button.TimeAddress.StartOfWeek(DayOfWeek.Monday);
+
                             refreshButton_Click(sender, e);
+                            AppState.weeklySetting = true;
+                            changeViewButton.Text = AppState.weeklySetting == true
+                                ? AppointmentScheduluer.Language.Label.WeeklyView.changeToMonthly[AppState.LanguageSetting]
+                                : AppointmentScheduluer.Language.Label.WeeklyView.changeToWeekly[AppState.LanguageSetting];
+                            pageLabel.Text = AppState.weeklySetting == true
+                                ? AppointmentScheduluer.Language.Label.WeeklyView.weeklyViewLabel[AppState.LanguageSetting]
+                                : AppointmentScheduluer.Language.Label.WeeklyView.monthlyViewLabel[AppState.LanguageSetting];
                         }; // "lambda instance 3"
 
                         DayPanels[day].Controls.Add(button, 0, week);
@@ -367,23 +375,29 @@ namespace AppointmentScheduluer
 
         private void report1button_Click(object sender, EventArgs e)
         {
-            AppState.ReportType = 0; 
+            AppState.ReportType = 1; 
             var reportView = new reportView();
             reportView.Show();
         }
 
         private void report2button_Click(object sender, EventArgs e)
         {
-            AppState.ReportType = 1; 
+            AppState.ReportType = 2; 
             var reportView = new reportView();
             reportView.Show();
+
         }
 
         private void report3button_Click(object sender, EventArgs e)
         {
-            AppState.ReportType = 2;
+            AppState.ReportType = 3;
             var reportView = new reportView();
             reportView.Show();
         }
+        /*
+         * number of appointment types by month
+           the schedule for each consultant
+           one additional report of your choice
+         */
     }
 }

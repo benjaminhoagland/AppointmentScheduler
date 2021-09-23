@@ -59,5 +59,6 @@ namespace AppointmentScheduluer
         }
         private static DateTime _BusinessStart = new DateTime(2021, 01, 01, 08, 0, 0);
         public static DateTime BusinessStart { get {return _BusinessStart; } }
+        public static int ReportType = 0;
     }
 }

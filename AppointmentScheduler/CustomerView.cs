@@ -71,6 +71,7 @@ namespace AppointmentScheduluer
         private void backButton_Click(object sender, EventArgs e)
         {
             this.Hide();
+            AppState.weeklyView.refreshButton_Click(sender, e);
         }
 
         private void customerListBox_SelectedIndexChanged(object sender, EventArgs e)

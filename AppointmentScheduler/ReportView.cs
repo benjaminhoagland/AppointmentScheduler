@@ -36,6 +36,19 @@ namespace AppointmentScheduluer
             textBox1.BorderStyle = 0;
             textBox1.BackColor = this.BackColor;
             textBox1.TabStop = false;
+
+            switch (AppState.ReportType)
+            {
+                case 1:
+                    textBox1.Text = Reports.AppoinmentTypesByMonth();
+                    break;
+                case 2:
+                    textBox1.Text = Reports.ConsultantSchedules();
+                    break;
+                case 3:
+                    textBox1.Text = Reports.AppointmentsByLocation();
+                    break;
+            }
         }
         private void Localize(int Language)
         {
@@ -43,6 +56,11 @@ namespace AppointmentScheduluer
             appNameLabel.Text = AppointmentScheduluer.Language.Label.CustomerView.appNameLabel[Language];
             pageLabel.Text = AppointmentScheduluer.Language.Label.ReportView.pageLabel[Language];
             backButton.Text = AppointmentScheduluer.Language.Label.CustomerView.backButton[Language];
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
