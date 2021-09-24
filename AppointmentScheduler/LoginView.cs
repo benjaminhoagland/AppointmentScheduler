@@ -32,7 +32,7 @@ namespace AppointmentScheduluer
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            LoginButton_Click(sender,e);
+            // LoginButton_Click(sender,e);
         }
 
         private void button1_Click(object sender, EventArgs e)
