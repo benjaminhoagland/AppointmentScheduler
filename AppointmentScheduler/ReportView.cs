@@ -39,13 +39,13 @@ namespace AppointmentScheduluer
 
             switch (AppState.ReportType)
             {
-                case 1:
+                case 0:
                     textBox1.Text = Reports.AppoinmentTypesByMonth();
                     break;
-                case 2:
+                case 1:
                     textBox1.Text = Reports.ConsultantSchedules();
                     break;
-                case 3:
+                case 2:
                     textBox1.Text = Reports.AppointmentsByLocation();
                     break;
             }

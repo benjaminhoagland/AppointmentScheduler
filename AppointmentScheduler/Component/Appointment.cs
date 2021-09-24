@@ -62,9 +62,33 @@ namespace AppointmentScheduluer
                     _Contact = Data.Select("appointment", 6, "appointmentID = \'" + _AppointmentId + "\';").FirstOrDefault();
                     _Type = Data.Select("appointment", 7, "appointmentID = \'" + _AppointmentId + "\';").FirstOrDefault();
                     _Url = Data.Select("appointment", 8, "appointmentID = \'" + _AppointmentId + "\';").FirstOrDefault();
-                    DateTime.TryParse(Data.Select("appointment", 9, "appointmentID = \'" + _AppointmentId + "\';").FirstOrDefault(), out _Date);
-                    DateTime.TryParse(Data.Select("appointment", 9, "appointmentID = \'" + _AppointmentId + "\';").FirstOrDefault(), out _Start);
-                    DateTime.TryParse(Data.Select("appointment", 10, "appointmentID = \'" + _AppointmentId + "\';").FirstOrDefault(), out _End);
+
+                    var date = Data.Select("appointment", 9, "appointmentID = \'" + _AppointmentId + "\';").FirstOrDefault();
+                    var start = Data.Select("appointment", 9, "appointmentID = \'" + _AppointmentId + "\';").FirstOrDefault();
+                    var end = Data.Select("appointment", 10, "appointmentID = \'" + _AppointmentId + "\';").FirstOrDefault();
+                    if (date == null || start == null || end == null)
+                    {
+                        // MessageBox.Show("end or start or date is null");
+                    }
+                    else
+                    {
+
+                    _Date = DateTime.Parse(date);
+
+                    _Start = DateTime.Parse(start);
+
+                    _End = DateTime.Parse(end);
+                    }
+
+                    /*
+                    MessageBox.Show("date is " + date);
+                    MessageBox.Show("_Date is " + _Date);
+                    MessageBox.Show("start is " + start);
+                    MessageBox.Show("_Start is " + _Start);
+                    MessageBox.Show("end is " + end);
+                    MessageBox.Show("_End is " + _End);
+                    */
+
                     New = false;
                 }
             }

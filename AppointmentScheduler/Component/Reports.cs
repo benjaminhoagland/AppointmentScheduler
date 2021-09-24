@@ -35,8 +35,8 @@ namespace AppointmentScheduluer
             var yearEnd = new DateTime(yearStart.Year, 1, 1).AddYears(1).AddSeconds(-1);
 
 
-            List<string> yearlyAppointmentList = Data.Select("appointment", 0, "start >= \'" + yearStart.ToString("yyyy-MM-dd hh:mm:ss") + "\'"
-                              + "AND end <= \'" + yearEnd.ToString("yyyy-MM-dd hh:mm:ss") + "\'");
+            List<string> yearlyAppointmentList = Data.Select("appointment", 0, "start >= \'" + yearStart.ToString("yyyy-MM-dd HH:mm:ss") + "\'"
+                              + "AND end <= \'" + yearEnd.ToString("yyyy-MM-dd HH:mm:ss") + "\'");
             // MessageBox.Show("yearlyAppointmentList is " + yearlyAppointmentList.Count);
 
             List<int> yearlyAppointmentIds = new List<int>();
@@ -56,8 +56,8 @@ namespace AppointmentScheduluer
             foreach (var month in Months)
             {
                 typeList.Clear();
-                List<string> monthlyAppointmentList = Data.Select("appointment", 0, "start >= \'" + month.monthStart.ToString("yyyy-MM-dd hh:mm:ss") + "\'"
-                              + "AND end <= \'" + month.monthEnd.ToString("yyyy-MM-dd hh:mm:ss") + "\'");
+                List<string> monthlyAppointmentList = Data.Select("appointment", 0, "start >= \'" + month.monthStart.ToString("yyyy-MM-dd HH:mm:ss") + "\'"
+                              + "AND end <= \'" + month.monthEnd.ToString("yyyy-MM-dd HH:mm:ss") + "\'");
                 List<int> monthlyAppointmentIds = new List<int>();
                 foreach (var idString in monthlyAppointmentList)
                 {
@@ -137,11 +137,98 @@ namespace AppointmentScheduluer
         }
         public static string ConsultantSchedules()
         {
-            return "";
+            string report = "Displaying Consultant (User) Schedules";
+            var newline = System.Environment.NewLine;
+            var tab = "\t";
+            report += newline;
+
+            var userIds = Data.Select("user", 0);
+            foreach(var id in userIds)
+            {
+                var userName = Data.Select("user", 1, "userId = \'" + id + "\'").FirstOrDefault();
+                report += "The consultant '" + userName + "' has the following appointments scheduled:";
+                report += newline;
+
+                var appointmentIds = Data.Select("appointment", 0, "userId = \'" + id + "\'");
+                var customerIds = Data.Select("appointment", 1, "userId = \'" + id + "\'");
+                var starts = Data.Select("appointment", 9, "userId = \'" + id + "\'");
+                var locations = Data.Select("appointment", 5, "userId = \'" + id + "\'");
+
+                var appointments = new List<(int id, string customerName, DateTime start, string location)>();
+                foreach(var appID in appointmentIds)
+                {
+                    var index = appointmentIds.IndexOf(appID);
+                    int parsed;
+                    Int32.TryParse(appID, out parsed);
+                    int customerId;
+                    Int32.TryParse(customerIds[index], out customerId);
+                    var customerName = Data.Select("customer", 1, "customerId = \'" + customerId + "\'").FirstOrDefault();
+                    DateTime start = DateTime.Parse(starts[index]);
+                    var location = locations[index];
+                    appointments.Add((parsed, customerName, start, location));
+                }
+                appointments.Sort((x, y) => x.start.CompareTo(y.start));
+
+                foreach(var appointment in appointments)
+                {
+                    report += tab + tab + "Appointment Time: " + appointment.start.ToString();
+                    report += tab + tab + "Customer Name: " + appointment.customerName;
+                    report += tab + tab + "Location: " + appointment.location;
+                    report += newline + newline;
+                }
+            }
+            return report;
         }
         public static string AppointmentsByLocation()
         {
-            return "";
+            string report = "Displaying Appointments by Location";
+            var newline = System.Environment.NewLine;
+            var tab = "\t";
+            report += newline;
+
+            var locations = Data.Select("appointment", 5);
+            // MessageBox.Show("locations.Count is " + locations.Count);
+            locations = locations.Distinct().ToList();
+            foreach(var location in locations)
+            {
+                report += location + " has the following appointments scheduled:" + newline;
+
+                
+
+                var appointmentIds = Data.Select("appointment", 0, "location = \'" + location + "\'");
+                var customerIds = Data.Select("appointment", 1, "location = \'" + location + "\'");
+                var starts = Data.Select("appointment", 9, "location = \'" + location + "\'");
+                var consultants = Data.Select("appointment", 2, "location = \'" + location + "\'");
+
+                var appointments = new List<(int id, string customerName, DateTime start, string consultant)>();
+                foreach (var appID in appointmentIds)
+                {
+                    var index = appointmentIds.IndexOf(appID);
+                    int parsed;
+                    Int32.TryParse(appID, out parsed);
+                    int customerId;
+                    Int32.TryParse(customerIds[index], out customerId);
+                    var customerName = Data.Select("customer", 1, "customerId = \'" + customerId + "\'").FirstOrDefault();
+                    DateTime start = DateTime.Parse(starts[index]);
+                    int userId;
+                    Int32.TryParse(consultants[index], out userId);
+                    var consultant = Data.Select("user", 1, "userId = \'" + userId + "\'").FirstOrDefault();
+                    appointments.Add((parsed, customerName, start, consultant));
+                }
+                appointments.Sort((x, y) => x.start.CompareTo(y.start));
+
+                foreach (var appointment in appointments)
+                {
+                    report += tab + tab + "Appointment Time: " + appointment.start.ToString();
+                    report += tab + tab + "Customer Name: " + appointment.customerName;
+                    report += tab + tab + "Consultant: " + appointment.consultant;
+                    report += newline + newline;
+                }
+            }
+
+
+            
+            return report;
         }
 
     }

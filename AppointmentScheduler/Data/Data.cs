@@ -30,6 +30,8 @@ namespace AppointmentScheduluer
             // fill sample dataset into database
             var users = new List<(string userName, string password)>();
             users.Add(("test", "test"));
+            users.Add(("Consultant 1", "test"));
+            users.Add(("Consultant 2", "test"));
             foreach (var (userName, password) in users)
             {
                 InsertUser(userName, password);
@@ -102,7 +104,8 @@ namespace AppointmentScheduluer
                 string type,
                 string url,
                 DateTime start,
-                DateTime end)>();
+                DateTime end,
+                int userId)>();
 
             appointments.Add
                 (
@@ -115,7 +118,8 @@ namespace AppointmentScheduluer
                         "Initial Appointment",
                         "someaddress.domain.com",
                         DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(0).AddHours(11),
-                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(0).AddHours(12)
+                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(0).AddHours(12),
+                        2
                      )
                 );
             appointments.Add
@@ -129,7 +133,8 @@ namespace AppointmentScheduluer
                         "Initial Appointment",
                         "someaddress.domain.com",
                         DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(0).AddHours(9),
-                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(0).AddHours(10)
+                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(0).AddHours(10),
+                        2
                      )
                 );
             appointments.Add
@@ -143,7 +148,8 @@ namespace AppointmentScheduluer
                         "Follow-Up Appointment",
                         "someaddress.domain.com",
                         DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(1).AddHours(8),
-                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(1).AddHours(9)
+                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(1).AddHours(9),
+                        3
                      )
                 );
             appointments.Add
@@ -157,13 +163,14 @@ namespace AppointmentScheduluer
                         "Follow-Up Appointment",
                         "someaddress.domain.com",
                         DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(1).AddHours(9),
-                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(1).AddHours(10)
+                        DateTime.Now.StartOfWeek(DayOfWeek.Monday).AddDays(1).AddHours(10),
+                        3
                      )
                 );
 
-            foreach (var (customerId, title, description, location, contact, type, url, start, end) in appointments)
+            foreach (var (customerId, title, description, location, contact, type, url, start, end, userId) in appointments)
             {
-                InsertAppointment(customerId, title, description, location, contact, type, url, start, end);
+                InsertAppointment(customerId, title, description, location, contact, type, url, start, end, userId);
             }
         }
         public static List<(DateTime start, DateTime end, string location)> GetAppointments(DateTime date)
@@ -270,6 +277,7 @@ namespace AppointmentScheduluer
             string url,
             DateTime start,
             DateTime end,
+            int userId = 1,
             string createdBy = "Initialization", string lastupdateby = "Initialization")
         {
             /*
@@ -295,8 +303,6 @@ namespace AppointmentScheduluer
             {
                 var database = Data.Connect();
                 database.Open();
-
-                int userId = 1;
                 var command = database.CreateCommand();
                 command.CommandText = "INSERT INTO appointment(customerId, userId, title, description, location, contact, type, url, start, end, createdate, createdBy, lastupdateby)"
                     + " VALUES(?customerId, ?userId, ?title, ?description, ?location, ?contact, ?type, ?url, ?start, ?end, ?createdate, ?createdBy, ?lastupdateby)";
@@ -308,9 +314,9 @@ namespace AppointmentScheduluer
                 command.Parameters.Add("?contact", MySqlDbType.Text).Value = contact;
                 command.Parameters.Add("?type", MySqlDbType.Text).Value = type;
                 command.Parameters.Add("?url", MySqlDbType.VarChar).Value = url;
-                command.Parameters.Add("?start", MySqlDbType.VarChar).Value = start.ToString("yyyy-MM-dd hh:mm:ss");
-                command.Parameters.Add("?end", MySqlDbType.VarChar).Value = end.ToString("yyyy-MM-dd hh:mm:ss");
-                command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                command.Parameters.Add("?start", MySqlDbType.VarChar).Value = start.ToString("yyyy-MM-dd HH:mm:ss");
+                command.Parameters.Add("?end", MySqlDbType.VarChar).Value = end.ToString("yyyy-MM-dd HH:mm:ss");
+                command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 command.Parameters.Add("?createdBy", MySqlDbType.VarChar).Value = createdBy;
                 command.Parameters.Add("?lastupdateby", MySqlDbType.VarChar).Value = lastupdateby;
                 /*
@@ -357,7 +363,7 @@ namespace AppointmentScheduluer
                 command.Parameters.Add("?userName", MySqlDbType.VarChar).Value = userName;
                 command.Parameters.Add("?password", MySqlDbType.VarChar).Value = password;
                 command.Parameters.Add("?active", MySqlDbType.Byte).Value = active;
-                command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 command.Parameters.Add("?createdBy", MySqlDbType.VarChar).Value = createdBy;
                 command.Parameters.Add("?lastupdateby", MySqlDbType.VarChar).Value = lastupdateby;
                 command.ExecuteNonQuery();
@@ -421,7 +427,7 @@ namespace AppointmentScheduluer
                 command.Parameters.Add("?customerName", MySqlDbType.VarChar).Value = customerName;
                 command.Parameters.Add("?addressId", MySqlDbType.Int32).Value = addressId; // very problematic but will work for the test data
                 command.Parameters.Add("?active", MySqlDbType.Byte).Value = active;
-                command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 command.Parameters.Add("?createdBy", MySqlDbType.VarChar).Value = createdBy;
                 command.Parameters.Add("?lastupdateby", MySqlDbType.VarChar).Value = lastupdateby;
                 command.ExecuteNonQuery();
@@ -491,7 +497,7 @@ namespace AppointmentScheduluer
                 command.Parameters.Add("?cityId", MySqlDbType.Int32).Value = cityId.FirstOrDefault(); // very problematic but will work for the test data
                 command.Parameters.Add("?postalCode", MySqlDbType.VarChar).Value = postalCode;
                 command.Parameters.Add("?phone", MySqlDbType.VarChar).Value = phone; 
-                command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 command.Parameters.Add("?createdBy", MySqlDbType.VarChar).Value = createdBy;
                 command.Parameters.Add("?lastupdateby", MySqlDbType.VarChar).Value = lastupdateby;
                 command.ExecuteNonQuery();
@@ -546,7 +552,7 @@ namespace AppointmentScheduluer
                     + " VALUES(?city, ?countryId, ?createdate, ?createdBy, ?lastupdateby)";
                 command.Parameters.Add("?city", MySqlDbType.VarChar).Value = city;
                 command.Parameters.Add("?countryId", MySqlDbType.Int32).Value = countryID.FirstOrDefault(); // very problematic but will work for the test data
-                command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 command.Parameters.Add("?createdBy", MySqlDbType.VarChar).Value = createdBy;
                 command.Parameters.Add("?lastupdateby", MySqlDbType.VarChar).Value = lastupdateby;
                 command.ExecuteNonQuery();
@@ -596,7 +602,7 @@ namespace AppointmentScheduluer
                 command.CommandText = "INSERT INTO country(country, createdate, createdBy, lastupdateby)"
                     + " VALUES(?country, ?createdate, ?createdBy, ?lastupdateby)";
                 command.Parameters.Add("?country", MySqlDbType.VarChar).Value = country;
-                command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                command.Parameters.Add("?createdate", MySqlDbType.VarChar).Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 command.Parameters.Add("?createdBy", MySqlDbType.VarChar).Value = createdBy;
                 command.Parameters.Add("?lastupdateby", MySqlDbType.VarChar).Value = lastupdateby;
                 command.ExecuteNonQuery();

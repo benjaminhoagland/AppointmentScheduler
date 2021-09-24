@@ -187,18 +187,21 @@ namespace AppointmentScheduluer
                             .ToString("HH:mm");
                         button.Text += System.Environment.NewLine;
 
-                        button.Name = "button" + timeslot.ToString("yyyymmddhh");
+                        button.Name = "button" + timeslot.ToString("yyyyMMddHH");
                         button.TimeAddress = timeslot;
                         // "lambda instance 2"
+
+                        string timeFormat = "yyyy-MM-dd H:mm:ss";
                         // this inline function dramatically increases code clarity and reduces overal class complexity
                         button.Click += (s, ev) => 
                         {
+                            // MessageBox.Show("button.TimeAddress.ToString(timeFormat) is " + button.TimeAddress.ToString(timeFormat));
                             int id = 0;
-                            Int32.TryParse(Data.Select("appointment", 0, "start = \'" + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss") + "\';").FirstOrDefault(), out id);
+                            Int32.TryParse(Data.Select("appointment", 0, "start = \'" + button.TimeAddress.ToString(timeFormat) + "\';").FirstOrDefault(), out id);
                             if (id == 0)
                             {
-                                Data.InsertAppointment(defaultCustomerID, "New appointment" + button.TimeAddress.ToString("yyyy-MM-dd"), "", AppointmentScheduluer.Location.Locations[AppState.LocationSetting], "", "New", "", button.TimeAddress, button.TimeAddress.AddHours(1));
-                                Int32.TryParse(Data.Select("appointment", 0, "start = \'" + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss") + "\';").LastOrDefault(), out id);
+                                Data.InsertAppointment(defaultCustomerID, "New appointment" + button.TimeAddress.ToString(timeFormat), "", AppointmentScheduluer.Location.Locations[AppState.LocationSetting], "", "New", "", button.TimeAddress, button.TimeAddress.AddHours(1));
+                                Int32.TryParse(Data.Select("appointment", 0, "start = \'" + button.TimeAddress.ToString(timeFormat) + "\';").LastOrDefault(), out id);
                                 Appointment.Selected.AppointmentId = id;
                             }
                             else
@@ -209,8 +212,8 @@ namespace AppointmentScheduluer
                             {
                                 if (id == 0)
                                 {
-                                    Data.InsertAppointment(defaultCustomerID, "New appointment" + button.TimeAddress.ToString("yyyy-MM-dd"), "", AppointmentScheduluer.Location.Locations[AppState.LocationSetting], "", "New", "", button.TimeAddress, button.TimeAddress.AddHours(1));
-                                    Int32.TryParse(Data.Select("appointment", 0, "start = \'" + button.TimeAddress.ToString("yyyy-MM-dd hh:mm:ss") + "\';").LastOrDefault(), out id);
+                                    Data.InsertAppointment(defaultCustomerID, "New appointment" + button.TimeAddress.ToString(timeFormat), "", AppointmentScheduluer.Location.Locations[AppState.LocationSetting], "", "New", "", button.TimeAddress, button.TimeAddress.AddHours(1));
+                                    Int32.TryParse(Data.Select("appointment", 0, "start = \'" + button.TimeAddress.ToString(timeFormat) + "\';").LastOrDefault(), out id);
                                     Appointment.Selected.AppointmentId = id;
                                 }
                                 else
@@ -263,7 +266,7 @@ namespace AppointmentScheduluer
                         button.Dock = DockStyle.Fill;
                         button.Text = AppState.SelectedWeek.AddDays(day + offset).ToString("yyyy-MM-dd");
 
-                        button.Name = "button" + AppState.SelectedWeek.AddDays(day + offset).ToString("yyyymmdd");
+                        button.Name = "button" + AppState.SelectedWeek.AddDays(day + offset).ToString("yyyyMMdd");
                         button.TimeAddress = AppState.SelectedWeek.AddDays(day + offset);
                         button.Click += (s, ev) => 
                         { 
@@ -310,7 +313,7 @@ namespace AppointmentScheduluer
             // lambda instance 3 is a quick comparison to supply the notification code with actionability
             if (appointments.Any(t => t.start - DateTime.Now <= new TimeSpan(0, minutes, 0)))
             {
-                var selectedIDs = Data.Select("appointment", 0, "start = \'" + DateTime.Now.AddHours(1).ToString("yyyy-MM-dd hh:00:00") + "\';");
+                var selectedIDs = Data.Select("appointment", 0, "start = \'" + DateTime.Now.AddHours(1).ToString("yyyy-MM-dd HH:00:00") + "\';");
                 foreach(var selection in selectedIDs)
                 {
                     var appointmentTime = DateTime.Parse(Data.Select("appointment", 9, "appointmentId = \'" + selection + "\';").FirstOrDefault());
@@ -375,14 +378,14 @@ namespace AppointmentScheduluer
 
         private void report1button_Click(object sender, EventArgs e)
         {
-            AppState.ReportType = 1; 
+            AppState.ReportType = 0; 
             var reportView = new reportView();
             reportView.Show();
         }
 
         private void report2button_Click(object sender, EventArgs e)
         {
-            AppState.ReportType = 2; 
+            AppState.ReportType = 1; 
             var reportView = new reportView();
             reportView.Show();
 
@@ -390,7 +393,7 @@ namespace AppointmentScheduluer
 
         private void report3button_Click(object sender, EventArgs e)
         {
-            AppState.ReportType = 3;
+            AppState.ReportType = 2;
             var reportView = new reportView();
             reportView.Show();
         }

@@ -14,7 +14,7 @@ namespace AppointmentScheduluer
 {
     public static class AppState
     {
-        public static BindingList<string> VisibleCustomerNames = new BindingList<string>() { "this is a test line", "this is another test line" };
+        public static BindingList<string> VisibleCustomerNames = new BindingList<string>();
 
         public static DateTime SelectedWeek = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
 
