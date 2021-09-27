@@ -22,7 +22,7 @@ namespace AppointmentScheduluer
         };
         public static MySqlConnection Connect()
         {
-            var connectionString = "server=wgudb.ucertify.com;database=U08i7a;port=3306;userid=U08i7a;password=53689299403;useaffectedrows=True;allowuservariables=True;sslmode=None";
+            var connectionString = "server=127.0.0.1;database=client_schedule;port=3306;userid=sqlUser;password=Passw0rd!;";
             return new MySqlConnection(connectionString);
         }
         public static void Populate()
