@@ -100,6 +100,7 @@
     <Compile Include="Component\Customer.cs" />
     <Compile Include="Component\Languages.cs" />
     <Compile Include="Component\Locations.cs" />
+    <Compile Include="Component\Reports.cs" />
     <Compile Include="CustomerView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -109,6 +110,12 @@
     <Compile Include="Data\Data.cs" />
     <Compile Include="DateTimeExtension.cs" />
     <Compile Include="DrawingControls.cs" />
+    <Compile Include="ReportView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReportView.Designer.cs">
+      <DependentUpon>ReportView.cs</DependentUpon>
+    </Compile>
     <Compile Include="LoginView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -133,6 +140,9 @@
     <EmbeddedResource Include="CustomerView.resx">
       <DependentUpon>CustomerView.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReportView.resx">
+      <DependentUpon>ReportView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoginView.resx">
       <DependentUpon>LoginView.cs</DependentUpon>
