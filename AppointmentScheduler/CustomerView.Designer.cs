@@ -291,6 +291,7 @@ namespace AppointmentScheduluer
             this.phoneBox.Name = "phoneBox";
             this.phoneBox.Size = new System.Drawing.Size(260, 20);
             this.phoneBox.TabIndex = 22;
+            this.phoneBox.TextChanged += new System.EventHandler(this.phoneBox_TextChanged);
             // 
             // phoneLabel
             // 
@@ -308,6 +309,7 @@ namespace AppointmentScheduluer
             this.postalCodeBox.Name = "postalCodeBox";
             this.postalCodeBox.Size = new System.Drawing.Size(260, 20);
             this.postalCodeBox.TabIndex = 16;
+            this.postalCodeBox.TextChanged += new System.EventHandler(this.postalCodeBox_TextChanged);
             // 
             // postalCodeLabel
             // 
@@ -324,6 +326,7 @@ namespace AppointmentScheduluer
             this.countryBox.Name = "countryBox";
             this.countryBox.Size = new System.Drawing.Size(260, 20);
             this.countryBox.TabIndex = 18;
+            this.countryBox.TextChanged += new System.EventHandler(this.countryBox_TextChanged);
             // 
             // countryLabel
             // 
@@ -340,6 +343,7 @@ namespace AppointmentScheduluer
             this.cityBox.Name = "cityBox";
             this.cityBox.Size = new System.Drawing.Size(260, 20);
             this.cityBox.TabIndex = 14;
+            this.cityBox.TextChanged += new System.EventHandler(this.cityBox_TextChanged);
             // 
             // cityLabel
             // 
@@ -373,6 +377,7 @@ namespace AppointmentScheduluer
             this.addressBox.Name = "addressBox";
             this.addressBox.Size = new System.Drawing.Size(260, 20);
             this.addressBox.TabIndex = 8;
+            this.addressBox.TextChanged += new System.EventHandler(this.addressBox_TextChanged);
             // 
             // addressLabel
             // 
@@ -389,6 +394,7 @@ namespace AppointmentScheduluer
             this.nameBox.Name = "nameBox";
             this.nameBox.Size = new System.Drawing.Size(260, 20);
             this.nameBox.TabIndex = 6;
+            this.nameBox.TextChanged += new System.EventHandler(this.nameBox_TextChanged);
             // 
             // infoGroupboxLabel
             // 

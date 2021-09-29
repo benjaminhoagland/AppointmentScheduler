@@ -371,5 +371,135 @@ namespace AppointmentScheduluer
             searchButton_Click(sender, e);
             deleteButton.Enabled = true;    
         }
+
+        private void nameBox_TextChanged(object sender, EventArgs e)
+        {
+            var passed = true;
+            if (nameBox.Text == "") passed = false;
+            if (nameBox.Text == " ") passed = false;
+            if (nameBox.Text.Length < 3) passed = false;
+            if (nameBox.Text == "") passed = false;
+            submitButton.Enabled = passed;
+                ToolTip tip = new ToolTip();
+            if (!passed)
+            {
+                nameBox.BackColor = Color.Salmon;
+                queryLabel.Text = "Name must be at least 3 characters and must not be blank.";
+
+            }
+            else
+            {
+                nameBox.BackColor = SystemColors.Window;
+                queryLabel.Text = "Ready";
+            }
+
+        }
+
+        private void addressBox_TextChanged(object sender, EventArgs e)
+        {
+            var passed = true;
+            if (addressBox.Text == "") passed = false;
+            if (addressBox.Text == " ") passed = false;
+            if (addressBox.Text.Length < 3) passed = false;
+            if (addressBox.Text == "") passed = false;
+            submitButton.Enabled = passed;
+            ToolTip tip = new ToolTip();
+            if (!passed)
+            {
+                addressBox.BackColor = Color.Salmon;
+                queryLabel.Text = "Address must be at least 3 characters.";
+
+            }
+            else
+            {
+                addressBox.BackColor = SystemColors.Window;
+                queryLabel.Text = "Ready";
+            }
+        }
+
+        private void cityBox_TextChanged(object sender, EventArgs e)
+        {
+            var passed = true;
+            if (cityBox.Text == "") passed = false;
+            if (cityBox.Text == " ") passed = false;
+            if (cityBox.Text.Length < 3) passed = false;
+            if (cityBox.Text == "") passed = false;
+            submitButton.Enabled = passed;
+            ToolTip tip = new ToolTip();
+            if (!passed)
+            {
+                cityBox.BackColor = Color.Salmon;
+                queryLabel.Text = "City must be at least 3 characters.";
+
+            }
+            else
+            {
+                cityBox.BackColor = SystemColors.Window;
+                queryLabel.Text = "Ready";
+            }
+        }
+
+        private void postalCodeBox_TextChanged(object sender, EventArgs e)
+        {
+            var passed = true;
+            passed = postalCodeBox.Text.Any(x => char.IsNumber(x));
+            if (postalCodeBox.Text == "") passed = false;
+            if (postalCodeBox.Text == " ") passed = false;
+            submitButton.Enabled = passed;
+            if (!passed)
+            {
+                postalCodeBox.BackColor = Color.Salmon;
+                queryLabel.Text = "Postal Code must be a number.";
+
+            }
+            else
+            {
+                postalCodeBox.BackColor = SystemColors.Window;
+                queryLabel.Text = "Ready";
+            }
+        }
+
+        private void countryBox_TextChanged(object sender, EventArgs e)
+        {
+            var passed = true;
+            passed = countryBox.Text.Any(x => !char.IsNumber(x));
+            if (countryBox.Text == "") passed = false;
+            if (countryBox.Text == " ") passed = false;
+            if (countryBox.Text.Length < 3) passed = false;
+            submitButton.Enabled = passed;
+            if (!passed)
+            {
+                countryBox.BackColor = Color.Salmon;
+                queryLabel.Text = "Country must be at least 3 characters.";
+
+            }
+            else
+            {
+                countryBox.BackColor = SystemColors.Window;
+                queryLabel.Text = "Ready";
+            }
+        }
+
+        private void phoneBox_TextChanged(object sender, EventArgs e)
+        {
+            var passed = true;
+            passed = phoneBox.Text.Any(x => char.IsNumber(x) || char.IsSymbol(x));
+            passed = !phoneBox.Text.Any(x => char.IsLetter(x));
+            if (phoneBox.Text == "") passed = false;
+            if (phoneBox.Text == " ") passed = false;
+            if (phoneBox.Text.Length < 3) passed = false;
+            submitButton.Enabled = passed;
+            if (!passed)
+            {
+                phoneBox.BackColor = Color.Salmon;
+                queryLabel.Text = "Phone must be numbers or symbols.";
+
+            }
+            else
+            {
+                phoneBox.BackColor = SystemColors.Window;
+                queryLabel.Text = "Ready";
+            }
+        }
     }
 }

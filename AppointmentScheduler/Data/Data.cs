@@ -30,8 +30,8 @@ namespace AppointmentScheduluer
             // fill sample dataset into database
             var users = new List<(string userName, string password)>();
             users.Add(("test", "test"));
-            users.Add(("Consultant 1", "test"));
-            users.Add(("Consultant 2", "test"));
+            users.Add(("Consultant 1", "test1"));
+            users.Add(("Consultant 2", "test2"));
             foreach (var (userName, password) in users)
             {
                 InsertUser(userName, password);

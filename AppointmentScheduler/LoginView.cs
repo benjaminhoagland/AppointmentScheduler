@@ -33,6 +33,8 @@ namespace AppointmentScheduluer
         private void Form1_Load(object sender, EventArgs e)
         {
             // LoginButton_Click(sender,e);
+
+            Localize(AppState.LanguageSetting);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -72,7 +74,22 @@ namespace AppointmentScheduluer
         }
         private void LoginButton_Click(object sender, EventArgs e)
         {
-            if(passwordBox.Text == "test" && usernameBox.Text == "test")
+            var usermatch = false;
+            var passwordmatch = false;
+            if (usernameBox.Text == "test")
+                usermatch = true;
+            if (passwordBox.Text == "test")
+                passwordmatch = true;
+
+            var username = Data.Select("user", 1, "username = \'" + usernameBox.Text + "\'").FirstOrDefault();
+            var password = Data.Select("user", 2, "username = \'" + usernameBox.Text + "\'").FirstOrDefault();
+
+            if (usernameBox.Text == username)
+                usermatch = true;
+            if (passwordBox.Text == password)
+                passwordmatch = true;
+
+            if (usermatch && passwordmatch)
             {
                 // login succedes
                 statusLabel.Text = AppointmentScheduluer.Language.Label.LoginView.Status_Success[AppState.LanguageSetting];

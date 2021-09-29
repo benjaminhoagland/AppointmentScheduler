@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace AppointmentScheduluer
 {
@@ -16,12 +17,23 @@ namespace AppointmentScheduluer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            var main = new LoginView();
-            main.FormClosed += new FormClosedEventHandler(FormClosed);
-            main.Show();
             // Data.Clear();
             // Data.Populate();
             AppState.SelectedWeek = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
+            AppState.TimezoneSetting = Timezones.List.IndexOf(TimeZoneInfo.Local);
+
+            CultureInfo ci = CultureInfo.CurrentCulture;
+            if (ci.TwoLetterISOLanguageName == "es")
+            {
+                AppState.LanguageSetting = 1;
+            }
+            else
+            {
+                AppState.LanguageSetting = 0;
+            }
+            var main = new LoginView();
+            main.FormClosed += new FormClosedEventHandler(FormClosed);
+            main.Show();
             Application.Run();
         }
 

@@ -151,6 +151,9 @@ namespace AppointmentScheduluer
             int defaultCustomerID = -1;
             Int32.TryParse(Data.Select("customer", 0).FirstOrDefault(), out defaultCustomerID);
             Drawing.Suspend(this);
+            TimeZoneInfo.ClearCachedData();
+     
+            Temporize(AppState.TimezoneSetting);
             /* 
             Data.InsertAppointment(3,
                        "Appointment 4",
